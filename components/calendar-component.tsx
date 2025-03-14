@@ -129,8 +129,8 @@ export function CalendarComponent() {
 
 				{selectedDateEvents.length > 0 ? (
 					<div className="space-y-4">
-						{selectedDateEvents.map((event, index) => (
-							<Card key={index} className="p-4">
+						{selectedDateEvents.map((event) => (
+							<Card key={event.date.toString()} className="p-4">
 								<div className="flex items-start justify-between">
 									<div>
 										<h3 className="font-medium">{event.title}</h3>

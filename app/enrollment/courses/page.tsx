@@ -164,9 +164,8 @@ export default function EnrollmentCoursesPage() {
 		setSelectedCourses((prev) => {
 			if (prev.includes(courseId)) {
 				return prev.filter((id) => id !== courseId);
-			} else {
-				return [...prev, courseId];
 			}
+			return [...prev, courseId];
 		});
 	};
 
