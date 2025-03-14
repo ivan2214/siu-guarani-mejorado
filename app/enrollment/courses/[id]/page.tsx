@@ -415,13 +415,13 @@ export default function CourseDetailPage() {
                   <div>
                     <h3 className="mb-2 font-medium text-sm">Evaluaciones</h3>
                     <ul className="space-y-1">
-                      {course.evaluation.map((eval, index) => (
+                      {course.evaluation.map((evaluation) => (
                         <li
-                          key={index}
+                          key={evaluation}
                           className="flex items-start gap-2 text-sm"
                         >
                           <Check className="mt-0.5 h-4 w-4 text-primary" />
-                          <span>{eval}</span>
+                          <span>{evaluation}</span>
                         </li>
                       ))}
                     </ul>
