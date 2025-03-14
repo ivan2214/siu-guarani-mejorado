@@ -35,7 +35,7 @@
 				"noBannedTypes": "off"
 			},
 			"correctness": {
-				"useExhaustiveDependencies": "warn",
+				"useExhaustiveDependencies": "off",
 				"noUnusedFunctionParameters": "error",
 				"noUnusedImports": "error",
 				"noEmptyPattern": "off"
