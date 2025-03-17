@@ -25,6 +25,7 @@ import { NavUser } from "./nav-user";
 import { NavMain } from "./nav-main";
 import type { NavMainItem } from "@/types";
 import { usePathname } from "next/navigation";
+import { CarrearSwitcher } from "./carrear-switcher";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const pathname = usePathname();
@@ -143,13 +144,19 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     isActive: isActive(item.url),
   }));
 
+  const carrears = [
+    "Programador Universitario",
+    "Analista de Sistemas",
+    "Ingeniería en Sistemas",
+  ];
+
   return (
-    <Sidebar {...props}>
+    <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <div className="flex items-center gap-2 px-2">
-          algo
-          <SidebarTrigger className="-ml-1" />
-        </div>
+        <SidebarTrigger className="transition-all duration-200 ease-in-out group-data-[state=collapsed]:mx-auto group-data-[state=expanded]:ml-auto" />
+
+        <CarrearSwitcher carrears={carrears} defaultCarrear={carrears[0]} />
+        {/* <SearchForm /> */}
       </SidebarHeader>
       <SidebarSeparator />
       <SidebarContent>
