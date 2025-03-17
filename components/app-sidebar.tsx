@@ -1,190 +1,171 @@
 "use client";
 
 import {
-	BookOpen,
-	Calendar,
-	ClipboardList,
-	FileText,
-	GraduationCap,
-	LayoutDashboard,
-	LogOut,
-	MessageSquare,
-	Settings,
-	User,
-	Users,
+  BookOpen,
+  Calendar,
+  ClipboardList,
+  FileText,
+  GraduationCap,
+  LayoutDashboard,
+  MessageSquare,
+  Users,
 } from "lucide-react";
-import Link from "next/link";
+
+import {} from "@/components/ui/avatar";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarHeader,
+  SidebarRail,
+  SidebarSeparator,
+  SidebarTrigger,
+} from "@/components/ui/sidebar";
+import { NavUser } from "./nav-user";
+import { NavMain } from "./nav-main";
+import type { NavMainItem } from "@/types";
 import { usePathname } from "next/navigation";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import {
-	Sidebar,
-	SidebarContent,
-	SidebarFooter,
-	SidebarGroup,
-	SidebarGroupContent,
-	SidebarGroupLabel,
-	SidebarHeader,
-	SidebarMenu,
-	SidebarMenuButton,
-	SidebarMenuItem,
-	SidebarSeparator,
-} from "@/components/ui/sidebar";
-import { toast } from "sonner";
+export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const pathname = usePathname();
 
-export function AppSidebar() {
-	const pathname = usePathname();
+  const isActive = (path: string) => {
+    return pathname === path;
+  };
 
-	const isActive = (path: string) => {
-		return pathname === path;
-	};
+  // Define menu items based on user role
+  // This would typically come from an auth context
+  const userRole: "student" | "teacher" | "admin" = "student"; // Could be "student", "teacher", or "admin"
 
-	const handleLogout = () => {
-		toast("Cerrando sesión", {
-			description: "Has cerrado sesión correctamente",
-		});
-		// In a real app, we would handle the logout logic here
-	};
+  const studentMenuItems: NavMainItem[] = [
+    { icon: LayoutDashboard, title: "Dashboard", url: "/dashboard/student" },
+    {
+      icon: BookOpen,
+      title: "Inscripción a Materias",
+      url: "/dashboard/student/enrollment/courses",
+    },
+    {
+      icon: ClipboardList,
+      title: "Inscripción a Exámenes",
+      url: "/dashboard/student/enrollment/exams",
+    },
+    {
+      icon: FileText,
+      title: "Historial Académico",
+      url: "/dashboard/student/academic-history",
+    },
+    {
+      icon: GraduationCap,
+      title: "Plan de Estudios",
+      url: "/dashboard/student/curriculum",
+    },
+    {
+      icon: Calendar,
+      title: "Calendario",
+      url: "/dashboard/student/calendar",
+    },
+    {
+      icon: MessageSquare,
+      title: "Mensajes",
+      url: "/dashboard/student/messages",
+    },
+  ];
 
-	// Define menu items based on user role
-	// This would typically come from an auth context
-	const userRole = "student"; // Could be "student", "teacher", or "admin"
+  const teacherMenuItems: NavMainItem[] = [
+    { icon: LayoutDashboard, title: "Dashboard", url: "/dashboard/teacher" },
+    { icon: Users, title: "Mis Cursos", url: "/dashboard/teacher/my-courses" },
+    {
+      icon: ClipboardList,
+      title: "Carga de Notas",
+      url: "/dashboard/teacher/grades",
+    },
+    {
+      icon: FileText,
+      title: "Asistencia",
+      url: "/dashboard/teacher/attendance",
+    },
+    {
+      icon: Calendar,
+      title: "Calendario",
+      url: "/dashboard/teacher/calendar",
+    },
+    {
+      icon: MessageSquare,
+      title: "Mensajes",
+      url: "/dashboard/teacher/messages",
+    },
+  ];
 
-	const studentMenuItems = [
-		{ icon: LayoutDashboard, label: "Dashboard", path: "/dashboard" },
-		{
-			icon: BookOpen,
-			label: "Inscripción a Materias",
-			path: "/enrollment/courses",
-		},
-		{
-			icon: ClipboardList,
-			label: "Inscripción a Exámenes",
-			path: "/enrollment/exams",
-		},
-		{ icon: FileText, label: "Historial Académico", path: "/academic-history" },
-		{ icon: GraduationCap, label: "Plan de Estudios", path: "/curriculum" },
-		{ icon: Calendar, label: "Calendario", path: "/calendar" },
-		{ icon: MessageSquare, label: "Mensajes", path: "/messages" },
-	];
+  const adminMenuItems: NavMainItem[] = [
+    { icon: LayoutDashboard, title: "Dashboard", url: "/dashboard/admin" },
+    {
+      icon: GraduationCap,
+      title: "Gestión de Carreras",
+      url: "/dashboard/admin/careers",
+    },
+    {
+      icon: BookOpen,
+      title: "Gestión de Materias",
+      url: "/dashboard/admin/courses",
+    },
+    {
+      icon: Users,
+      title: "Gestión de Usuarios",
+      url: "/dashboard/admin/users",
+    },
+    {
+      icon: Calendar,
+      title: "Horarios y Cupos",
+      url: "/dashboard/admin/schedules",
+    },
+    {
+      icon: FileText,
+      title: "Certificados",
+      url: "/dashboard/admin/certificates",
+    },
+    {
+      icon: MessageSquare,
+      title: "Comunicaciones",
+      url: "/dashboard/admin/communications",
+    },
+  ];
 
-	const teacherMenuItems = [
-		{ icon: LayoutDashboard, label: "Dashboard", path: "/dashboard" },
-		{ icon: Users, label: "Mis Cursos", path: "/my-courses" },
-		{ icon: ClipboardList, label: "Carga de Notas", path: "/grades" },
-		{ icon: FileText, label: "Asistencia", path: "/attendance" },
-		{ icon: Calendar, label: "Calendario", path: "/calendar" },
-		{ icon: MessageSquare, label: "Mensajes", path: "/messages" },
-	];
+  // Select menu items based on user role
+  const menuItems: NavMainItem[] =
+    userRole === "student"
+      ? studentMenuItems
+      : userRole === "teacher"
+      ? teacherMenuItems
+      : adminMenuItems;
 
-	const adminMenuItems = [
-		{ icon: LayoutDashboard, label: "Dashboard", path: "/dashboard" },
-		{
-			icon: GraduationCap,
-			label: "Gestión de Carreras",
-			path: "/manage/careers",
-		},
-		{ icon: BookOpen, label: "Gestión de Materias", path: "/manage/courses" },
-		{ icon: Users, label: "Gestión de Usuarios", path: "/manage/users" },
-		{ icon: Calendar, label: "Horarios y Cupos", path: "/manage/schedules" },
-		{ icon: FileText, label: "Certificados", path: "/certificates" },
-		{ icon: MessageSquare, label: "Comunicaciones", path: "/communications" },
-	];
+  const navMain: NavMainItem[] = menuItems.map((item) => ({
+    ...item,
+    isActive: isActive(item.url),
+  }));
 
-	// Select menu items based on user role
-	const menuItems =
-		userRole === "student"
-			? studentMenuItems
-			: userRole === "teacher"
-				? teacherMenuItems
-				: adminMenuItems;
-
-	return (
-		<Sidebar>
-			<SidebarHeader>
-				<div className="flex items-center gap-2 px-2">
-					<Avatar className="h-8 w-8">
-						<AvatarImage
-							src="/placeholder.svg?height=32&width=32"
-							alt="Avatar"
-						/>
-						<AvatarFallback>US</AvatarFallback>
-					</Avatar>
-					<div className="flex flex-col">
-						<span className="font-medium text-sm">Usuario Estudiante</span>
-						<span className="text-muted-foreground text-xs">
-							Ingeniería en Sistemas
-						</span>
-					</div>
-				</div>
-			</SidebarHeader>
-			<SidebarSeparator />
-			<SidebarContent>
-				<SidebarGroup>
-					<SidebarGroupLabel>Menú Principal</SidebarGroupLabel>
-					<SidebarGroupContent>
-						<SidebarMenu>
-							{menuItems.map((item) => (
-								<SidebarMenuItem key={item.path}>
-									<SidebarMenuButton
-										asChild
-										isActive={isActive(item.path)}
-										tooltip={item.label}
-									>
-										<Link href={item.path}>
-											<item.icon className="h-4 w-4" />
-											<span>{item.label}</span>
-										</Link>
-									</SidebarMenuButton>
-								</SidebarMenuItem>
-							))}
-						</SidebarMenu>
-					</SidebarGroupContent>
-				</SidebarGroup>
-				<SidebarSeparator />
-				<SidebarGroup>
-					<SidebarGroupLabel>Configuración</SidebarGroupLabel>
-					<SidebarGroupContent>
-						<SidebarMenu>
-							<SidebarMenuItem>
-								<SidebarMenuButton
-									asChild
-									isActive={isActive("/profile")}
-									tooltip="Perfil"
-								>
-									<Link href="/profile">
-										<User className="h-4 w-4" />
-										<span>Perfil</span>
-									</Link>
-								</SidebarMenuButton>
-							</SidebarMenuItem>
-							<SidebarMenuItem>
-								<SidebarMenuButton
-									asChild
-									isActive={isActive("/settings")}
-									tooltip="Configuración"
-								>
-									<Link href="/settings">
-										<Settings className="h-4 w-4" />
-										<span>Configuración</span>
-									</Link>
-								</SidebarMenuButton>
-							</SidebarMenuItem>
-						</SidebarMenu>
-					</SidebarGroupContent>
-				</SidebarGroup>
-			</SidebarContent>
-			<SidebarFooter>
-				<Button
-					variant="ghost"
-					className="w-full justify-start"
-					onClick={handleLogout}
-				>
-					<LogOut className="mr-2 h-4 w-4" />
-					Cerrar Sesión
-				</Button>
-			</SidebarFooter>
-		</Sidebar>
-	);
+  return (
+    <Sidebar {...props}>
+      <SidebarHeader>
+        <div className="flex items-center gap-2 px-2">
+          algo
+          <SidebarTrigger className="-ml-1" />
+        </div>
+      </SidebarHeader>
+      <SidebarSeparator />
+      <SidebarContent>
+        <NavMain items={navMain} />
+        {/* <NavProjects projects={projects} /> */}
+      </SidebarContent>
+      <SidebarFooter>
+        <NavUser
+          user={{
+            avatar: "/placeholder.svg?height=32&width=32",
+            email: "",
+            name: "Usuario Estudiante",
+          }}
+        />
+      </SidebarFooter>
+      <SidebarRail />
+    </Sidebar>
+  );
 }
