@@ -31,7 +31,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const pathname = usePathname();
 
   const isActive = (path: string) => {
-    return pathname === path;
+    const cleanPath = path.replace(/\?.*/, "");
+    return pathname === cleanPath;
   };
 
   // Define menu items based on user role
@@ -39,7 +40,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const userRole: "student" | "teacher" | "admin" = "student"; // Could be "student", "teacher", or "admin"
 
   const studentMenuItems: NavMainItem[] = [
-    { icon: LayoutDashboard, title: "Dashboard", url: "/dashboard/student" },
+    {
+      icon: LayoutDashboard,
+      title: "Dashboard",
+      url: "/dashboard?role=student",
+    },
     {
       icon: BookOpen,
       title: "Inscripción a Materias",
@@ -73,7 +78,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   ];
 
   const teacherMenuItems: NavMainItem[] = [
-    { icon: LayoutDashboard, title: "Dashboard", url: "/dashboard/teacher" },
+    {
+      icon: LayoutDashboard,
+      title: "Dashboard",
+      url: "/dashboard?role=teacher",
+    },
     { icon: Users, title: "Mis Cursos", url: "/dashboard/teacher/my-courses" },
     {
       icon: ClipboardList,
@@ -98,7 +107,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   ];
 
   const adminMenuItems: NavMainItem[] = [
-    { icon: LayoutDashboard, title: "Dashboard", url: "/dashboard/admin" },
+    { icon: LayoutDashboard, title: "Dashboard", url: "/dashboard?role=admin" },
     {
       icon: GraduationCap,
       title: "Gestión de Carreras",

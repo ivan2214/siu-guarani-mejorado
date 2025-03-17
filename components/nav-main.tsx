@@ -24,7 +24,10 @@ export function NavMain({ items }: { items: NavMainItem[] }) {
               <SidebarMenuButton tooltip={item.title}>
                 {item.icon && <item.icon />}
                 <Link
-                  className={cn(!item.isActive && "text-muted-foreground")}
+                  className={cn(
+                    !item.isActive && "text-muted-foreground",
+                    "w-full"
+                  )}
                   href={item.url}
                 >
                   {item.title}
