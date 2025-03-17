@@ -162,7 +162,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     <Sidebar
       side="left"
       variant="sidebar"
-      className="!h-[calc(100svh-var(--header-height))] top-[--header-height]"
+      className="flex h-full flex-col justify-between pt-12"
       {...props}
     >
       <SidebarHeader>

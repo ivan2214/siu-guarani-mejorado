@@ -67,6 +67,7 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^1.9.4",
+		"@faker-js/faker": "^9.6.0",
 		"@tailwindcss/postcss": "^4",
 		"@types/node": "^20",
 		"@types/react": "^19",
@@ -74,5 +75,8 @@
 		"prisma": "^6.5.0",
 		"tailwindcss": "^4",
 		"typescript": "^5"
+	},
+	"prisma": {
+		"seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
 	}
 }

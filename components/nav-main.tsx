@@ -17,8 +17,8 @@ export function NavMain({ items }: { items: NavMainItem[] }) {
   return (
     <SidebarGroup className="h-full">
       <SidebarGroupLabel>Links principales</SidebarGroupLabel>
-      <SidebarGroupContent className="h-full bg-red-500">
-        <SidebarMenu className="h-full bg-red-500">
+      <SidebarGroupContent className="h-full ">
+        <SidebarMenu className="h-full ">
           {items.map((item) => (
             <SidebarMenuItem key={item.title}>
               <SidebarMenuButton tooltip={item.title}>
