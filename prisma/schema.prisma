@@ -1,0 +1,280 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider     = "postgresql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
+}
+
+// Enum para definir los roles de usuario
+enum Rol {
+  ESTUDIANTE
+  DOCENTE
+  ADMINISTRATIVO // Solo este rol puede dar de alta usuarios
+}
+
+// Enum para definir género
+enum Genero {
+  MASCULINO
+  FEMENINO
+  OTRO
+}
+
+// Enum para el estado de una materia cursada
+enum EstadoMateria {
+  REGULAR
+  APROBADO
+  LIBRE
+}
+
+// Enum para estados de trámites o certificados
+enum EstadoTramite {
+  PENDIENTE
+  APROBADO
+  RECHAZADO
+}
+
+// Enum para tipos de trámites que pueden solicitar los usuarios
+enum ProcedureType {
+  CERTIFICADO_DIGITAL
+}
+
+// Modelo de Usuario
+model User {
+  id        Int      @id @default(autoincrement()) // ID único autoincremental
+  firstName String // Nombre
+  lastName  String // Apellido
+  dni       String   @unique // Documento Nacional de Identidad (único)
+  email     String   @unique // Correo electrónico (único)
+  password  String // Contraseña (debe estar hasheada)
+  birthDate DateTime // Fecha de nacimiento
+  genero    Genero // Género del usuario
+  role      Rol      @default(ESTUDIANTE) // Rol del usuario (ESTUDIANTE, DOCENTE, ADMINISTRATIVO)
+
+  // Relaciones con otros modelos
+  enrollments         Enrollment[]
+  examRegistrations   ExamRegistration[]
+  academicRecords     AcademicRecord[]
+  sentMessages        Message[]            @relation("SentMessages")
+  receivedMessages    Message[]            @relation("ReceivedMessages")
+  activityLogs        ActivityLog[]
+  procedureRequests   ProcedureRequest[]
+  passwordResetTokens PasswordResetToken[] // Relación con los tokens de recuperación de contraseña
+  notifications       Notification[]
+  refreshTokens       RefreshToken[] // Tokens de sesión (si se usan JWT con refresh tokens)
+  Attendance          Attendance[]
+}
+
+// Relación entre Plan de Estudio y Materia
+model StudyPlanSubject {
+  id          Int @id @default(autoincrement())
+  studyPlanId Int
+  subjectId   Int
+
+  studyPlan StudyPlan @relation(fields: [studyPlanId], references: [id])
+  subject   Subject   @relation(fields: [subjectId], references: [id])
+
+  @@unique([studyPlanId, subjectId])
+  @@index([subjectId])
+}
+
+// Modelo de Plan de Estudio
+model StudyPlan {
+  id       Int                @id @default(autoincrement())
+  name     String // Nombre del plan de estudios
+  subjects StudyPlanSubject[]
+}
+
+// Modelo de Materia
+model Subject {
+  id          Int     @id @default(autoincrement()) // ID único
+  code        String  @unique // Código de la materia
+  name        String // Nombre de la materia
+  description String? // Descripción opcional
+  capacity    Int // Capacidad máxima de alumnos
+
+  // Relaciones
+  enrollments          Enrollment[]
+  examSessions         ExamSession[]
+  studyPlanSubjects    StudyPlanSubject[]
+  subjectPrerequisites SubjectPrerequisite[] @relation("SubjectPrerequisites_Primary")
+  prerequisiteFor      SubjectPrerequisite[] @relation("SubjectPrerequisites_Prereq")
+  Attendance           Attendance[]
+  AcademicRecord       AcademicRecord[]
+}
+
+// Tabla intermedia para correlatividades entre materias
+model SubjectPrerequisite {
+  id             Int @id @default(autoincrement())
+  subjectId      Int
+  prerequisiteId Int
+
+  subject      Subject @relation("SubjectPrerequisites_Primary", fields: [subjectId], references: [id])
+  prerequisite Subject @relation("SubjectPrerequisites_Prereq", fields: [prerequisiteId], references: [id])
+
+  @@unique([subjectId, prerequisiteId])
+  @@index([prerequisiteId])
+}
+
+// Inscripciones a materias (cursado)
+model Enrollment {
+  id             Int      @id @default(autoincrement())
+  studentId      Int
+  subjectId      Int
+  enrollmentDate DateTime @default(now())
+
+  student User    @relation(fields: [studentId], references: [id])
+  subject Subject @relation(fields: [subjectId], references: [id])
+
+  @@unique([studentId, subjectId]) // Un estudiante no puede inscribirse dos veces a la misma materia
+  @@index([subjectId])
+}
+
+// Mesas de exámenes
+model ExamSession {
+  id        Int      @id @default(autoincrement())
+  subjectId Int
+  date      DateTime
+  capacity  Int
+
+  subject       Subject            @relation(fields: [subjectId], references: [id])
+  registrations ExamRegistration[]
+
+  @@index([subjectId])
+}
+
+// Inscripciones a mesas de exámenes
+model ExamRegistration {
+  id               Int      @id @default(autoincrement())
+  studentId        Int
+  examSessionId    Int
+  registrationDate DateTime @default(now())
+
+  student     User        @relation(fields: [studentId], references: [id])
+  examSession ExamSession @relation(fields: [examSessionId], references: [id])
+
+  @@unique([studentId, examSessionId]) // Un estudiante no puede inscribirse dos veces al mismo examen
+  @@index([examSessionId])
+}
+
+// Registro de asistencia
+model Attendance {
+  id        Int      @id @default(autoincrement())
+  studentId Int
+  subjectId Int
+  date      DateTime @default(now())
+  status    String? // "presente" o "ausente"
+
+  student User    @relation(fields: [studentId], references: [id])
+  subject Subject @relation(fields: [subjectId], references: [id])
+
+  @@index([studentId])
+  @@index([subjectId])
+}
+
+// Historial académico de los estudiantes
+model AcademicRecord {
+  id           Int           @id @default(autoincrement())
+  studentId    Int
+  subjectId    Int
+  partialGrade Float? // Nota de parciales
+  finalGrade   Float? // Nota del examen final
+  status       EstadoMateria
+  updatedAt    DateTime      @updatedAt
+
+  student User    @relation(fields: [studentId], references: [id])
+  subject Subject @relation(fields: [subjectId], references: [id])
+
+  @@index([subjectId])
+  @@index([studentId])
+}
+
+// Trámites y certificados digitales
+model ProcedureRequest {
+  id        Int           @id @default(autoincrement())
+  userId    Int
+  type      ProcedureType
+  status    EstadoTramite
+  details   Json? // Datos adicionales en formato JSON
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+}
+
+// Notificaciones a los usuarios
+model Notification {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  message   String
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+}
+
+// Mensajería interna entre usuarios
+model Message {
+  id         Int      @id @default(autoincrement())
+  senderId   Int
+  receiverId Int
+  content    String
+  sentAt     DateTime @default(now())
+  isRead     Boolean  @default(false)
+
+  sender   User @relation("SentMessages", fields: [senderId], references: [id])
+  receiver User @relation("ReceivedMessages", fields: [receiverId], references: [id])
+
+  @@index([senderId])
+  @@index([receiverId])
+}
+
+// Logs de actividad del sistema
+model ActivityLog {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  activity  String // Ejemplo: "Inicio de sesión", "Inscripción a materia"
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+}
+
+// Tokens de recuperación de contraseña
+model PasswordResetToken {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+}
+
+// Tokens de sesión (para autenticación con JWT y refresh tokens)
+model RefreshToken {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  token     String   @unique
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+}
