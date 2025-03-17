@@ -42,6 +42,7 @@
 	--radius-md: calc(var(--radius) - 2px);
 	--radius-lg: var(--radius);
 	--radius-xl: calc(var(--radius) + 4px);
+	--header-height: calc(var(--spacing) * 12 + 1px);
 }
 
 :root {
@@ -111,6 +112,7 @@
 	--sidebar-accent-foreground: oklch(0.985 0 0);
 	--sidebar-border: oklch(1 0 0 / 10%);
 	--sidebar-ring: oklch(0.552 0.016 285.938);
+	--spacing: 0.222222rem;
 }
 
 @layer base {

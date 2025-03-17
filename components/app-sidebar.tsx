@@ -19,7 +19,6 @@ import {
   SidebarHeader,
   SidebarRail,
   SidebarSeparator,
-  SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { NavUser } from "./nav-user";
 import { NavMain } from "./nav-main";
@@ -160,10 +159,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   ];
 
   return (
-    <Sidebar collapsible="icon" {...props}>
+    <Sidebar
+      side="left"
+      variant="sidebar"
+      className="!h-[calc(100svh-var(--header-height))] top-[--header-height]"
+      {...props}
+    >
       <SidebarHeader>
-        <SidebarTrigger className="transition-all duration-200 ease-in-out group-data-[state=collapsed]:mx-auto group-data-[state=expanded]:ml-auto" />
-
         <CarrearSwitcher carrears={carrears} defaultCarrear={carrears[0]} />
         {/* <SearchForm /> */}
       </SidebarHeader>

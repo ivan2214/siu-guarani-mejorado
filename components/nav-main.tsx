@@ -15,10 +15,10 @@ import Link from "next/link";
 
 export function NavMain({ items }: { items: NavMainItem[] }) {
   return (
-    <SidebarGroup>
+    <SidebarGroup className="h-full">
       <SidebarGroupLabel>Links principales</SidebarGroupLabel>
-      <SidebarGroupContent>
-        <SidebarMenu>
+      <SidebarGroupContent className="h-full bg-red-500">
+        <SidebarMenu className="h-full bg-red-500">
           {items.map((item) => (
             <SidebarMenuItem key={item.title}>
               <SidebarMenuButton tooltip={item.title}>
