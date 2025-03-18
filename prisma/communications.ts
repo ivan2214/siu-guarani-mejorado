@@ -22,6 +22,13 @@ export const getCommunicationById = async (
 ): Promise<Communication | null> => {
   return await prisma.communication.findUnique({
     where: { id },
+    include: {
+      replies: {
+        include: {
+          user: true,
+        },
+      },
+    },
   });
 };
 

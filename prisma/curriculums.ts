@@ -31,9 +31,6 @@ export const createCurriculum = async (
 ): Promise<Curriculum> => {
   return await prisma.curriculum.create({
     data,
-    include: {
-      career: true,
-    },
   });
 };
 
@@ -44,9 +41,6 @@ export const updateCurriculum = async (
   return await prisma.curriculum.update({
     where: { id },
     data,
-    include: {
-      career: true,
-    },
   });
 };
 
@@ -55,8 +49,5 @@ export const deleteCurriculum = async (
 ): Promise<Curriculum | null> => {
   return await prisma.curriculum.delete({
     where: { id },
-    include: {
-      career: true,
-    },
   });
 };
