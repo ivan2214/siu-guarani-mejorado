@@ -16,7 +16,7 @@ model User {
 
   name     String // Nombre del usuario
   password String // Contraseña del usuario
-  role     Role    @default(STUDENT)
+  role     Role    @default(ESTUDIANTE)
   avatar   String?
 
   userStatus UserStatus
@@ -31,8 +31,8 @@ model User {
 
 enum Role {
   ADMIN
-  STUDENT
-  TEACHER
+  ESTUDIANTE
+  PROFESOR
 }
 
 enum UserStatus {
@@ -41,10 +41,11 @@ enum UserStatus {
 }
 
 model Student {
-  id          String       @id @default(uuid())
-  user        User?        @relation(fields: [userId], references: [id])
-  userId      String?      @unique
-  enrollments Enrollment[] // Materias inscritas por el estudiante
+  id             String                @id @default(uuid())
+  user           User?                 @relation(fields: [userId], references: [id])
+  userId         String?               @unique
+  subjectRecords SubjectRegistration[] // Materias inscritas por el estudiante
+  examRecords    ExamRegistration[]
 
   academicRecord AcademicRecord? // Historial académico del estudiante
 }
@@ -53,9 +54,9 @@ model AcademicRecord {
   id String @id @default(uuid())
 
   averageGrade          Float? // Promedio general del estudiante
-  completedCourses      Int? // Cursos completados por el estudiante
-  coursesEnrolled       Int? // Cursos inscritos por el estudiante
-  progressPercentCarrer Float? // Porcentaje de avance en el carrer
+  completedSubjects     Int? // Materias completadas por el estudiante
+  subjectRecords        Int? // Materias inscritas por el estudiante
+  progressPercentCarrer Float? // Porcentaje de avance en la carrera
 
   student   Student @relation(fields: [studentId], references: [id])
   studentId String  @unique
@@ -63,18 +64,34 @@ model AcademicRecord {
   @@index([studentId])
 }
 
-model Enrollment {
+model SubjectRegistration {
+  // modelo de inscripción de estudiantes en materias
   id           String   @id @default(uuid())
   student      Student  @relation(fields: [studentId], references: [id]) // Estudiante al que pertenece la inscripción
   studentId    String
-  course       Course   @relation(fields: [courseId], references: [id]) // Materia a la que se inscribió el estudiante
-  courseId     String
+  subject      Subject  @relation(fields: [subjectId], references: [id]) // Materia a la que se inscribió el estudiante
+  subjectId    String
   year         Int // Año de la inscripción
   semester     Int // Cuatrimestre de la inscripción
   grade        Float? // Calificación de la inscripción
-  registeredAt DateTime @default(now()) // Fecha y hora de la inscripción
+  registeredAt DateTime @default(now()) // Fecha y hora de la inscripción a la materia
 
-  @@index([courseId])
+  @@index([subjectId])
+  @@index([studentId])
+}
+
+model ExamRegistration {
+  id           String   @id @default(uuid())
+  student      Student  @relation(fields: [studentId], references: [id]) // Estudiante al que pertenece la inscripción
+  studentId    String
+  exam         Exam     @relation(fields: [examId], references: [id]) // Examen a la que se inscribió el estudiante
+  examId       String
+  year         Int // Año de la inscripción
+  semester     Int // Cuatrimestre de la inscripción
+  grade        Float? // Calificación de la inscripción
+  registeredAt DateTime @default(now()) // Fecha y hora de la inscripción a la materia
+
+  @@index([examId])
   @@index([studentId])
 }
 
@@ -87,10 +104,10 @@ model Professor {
   userId String? @unique
 
   departments Department[] // Departamentos a los que pertenece el profesor
-  courses     Course[] // materas dictadas por el profesor
+  subjects    Subject[] // Materias dictadas por el profesor
 }
 
-model Course {
+model Subject {
   id   String @id @default(uuid())
   code String @unique
 
@@ -100,41 +117,66 @@ model Course {
   description String? // Descripción de la materia
   capacity    Int // Capacidad de la materia
 
+  progressPercentage Float // porcentaje de cuanto falta para terminar la materia
+
   career       Career     @relation(fields: [careerId], references: [id]) // La carrera a la que pertenece la materia
   careerId     String
-  department   Department @relation(fields: [departmentId], references: [id]) // El departamento al que pertenece la materia  (catedra)
+  department   Department @relation(fields: [departmentId], references: [id]) // El departamento al que pertenece la materia (cátedra)
   departmentId String
 
-  professors  Professor[] // Profesores que dictan la materia
-  students    Enrollment[] // Estudiantes matriculados en la materia
-  evaluations Evaluation[] // Evaluaciones de la materia
+  professors          Professor[] // Profesores que dictan la materia
+  students            SubjectRegistration[] // Estudiantes matriculados en la materia
+  exams               Exam[] // Exámenes de la materia
+  correlativeSubjects CorrelativeSubject[] // Materias correlativas
 
   @@index([careerId])
   @@index([departmentId])
 }
 
-model Evaluation {
-  id       String   @id @default(uuid())
-  name     String // Nombre de la evaluación (1 Parcial, 2 Parcial, Final, etc.)
-  date     DateTime // Fecha de la evaluación
-  course   Course   @relation(fields: [courseId], references: [id])
-  courseId String
+model CorrelativeSubject {
+  id String @id @default(uuid())
 
-  @@index([courseId])
+  subject   Subject? @relation(fields: [subjectId], references: [id])
+  subjectId String?
+
+  @@index([subjectId])
+}
+
+model Exam {
+  id        String   @id @default(uuid())
+  name      String // Nombre del examen (1 Parcial, 2 Parcial, Final, Recuperatorio, etc.)
+  date      DateTime // Fecha del examen
+  location  String // Lugar donde se rendirá el examen
+  subject   Subject  @relation(fields: [subjectId], references: [id])
+  subjectId String
+  examType  ExamType // Tipo de examen (parcial, final, etc.)
+  duration  Int? // Duración en minutos
+
+  studentsEnrolled ExamRegistration[]
+
+  @@index([subjectId])
+}
+
+enum ExamType {
+  PARCIAL
+  FINAL
+  RECUPERATORIO
+  LIBRE
+  OTRO
 }
 
 model Career {
-  id      String   @id @default(uuid())
-  name    String
-  code    String   @unique
-  courses Course[]
+  id       String    @id @default(uuid())
+  name     String
+  code     String    @unique
+  subjects Subject[]
 }
 
 model Department {
   id         String      @id @default(uuid())
   name       String
   professors Professor[]
-  courses    Course[]
+  subjects   Subject[]
   location   String?
 }
 
