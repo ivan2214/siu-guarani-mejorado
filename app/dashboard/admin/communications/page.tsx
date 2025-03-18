@@ -6,7 +6,6 @@ import {
   Calendar,
   Download,
   Edit,
-  Filter,
   Mail,
   MessageSquare,
   Plus,
@@ -52,16 +51,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
+import {} from "@/components/ui/sheet";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -264,7 +254,7 @@ export default function CommunicationsPage() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="container space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="font-bold text-3xl tracking-tight">Comunicaciones</h1>
@@ -444,7 +434,7 @@ export default function CommunicationsPage() {
           />
         </div>
 
-        <div className="flex w-full gap-2 sm:w-auto">
+        {/*     <div className="flex w-full gap-2 sm:w-auto">
           <Sheet open={filterSheetOpen} onOpenChange={setFilterSheetOpen}>
             <SheetTrigger asChild>
               <Button variant="outline" className="flex gap-2">
@@ -478,7 +468,7 @@ export default function CommunicationsPage() {
                       <SelectValue placeholder="Todos los tipos" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">Todos los tipos</SelectItem>
+                      <SelectItem value="all">Todos los tipos</SelectItem>
                       <SelectItem value="notification">Notificación</SelectItem>
                       <SelectItem value="announcement">Anuncio</SelectItem>
                     </SelectContent>
@@ -545,7 +535,7 @@ export default function CommunicationsPage() {
               </SheetFooter>
             </SheetContent>
           </Sheet>
-        </div>
+        </div> */}
       </div>
 
       <Tabs

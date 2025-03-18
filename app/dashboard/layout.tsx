@@ -18,12 +18,12 @@ const DashboardLayout: React.FC<DashboardLayoutFormProps> = ({ children }) => {
       <SidebarProvider className="flex flex-col">
         <SiteHeader />
 
-        <main className="flex flex-1">
+        <section className="flex flex-1">
           <AppSidebar />
           <SidebarInset>
             <section className="w-full flex-1 p-4 md:p-6">{children}</section>
           </SidebarInset>
-        </main>
+        </section>
 
         <SonnerProvider />
       </SidebarProvider>
