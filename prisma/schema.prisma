@@ -48,6 +48,10 @@ model Student {
   examRecords    ExamRegistration[]
 
   academicRecord AcademicRecord? // Historial académico del estudiante
+  schedule       Schedule?       @relation(fields: [scheduleId], references: [id])
+  scheduleId     String?
+
+  @@index([scheduleId])
 }
 
 model AcademicRecord {
@@ -105,6 +109,7 @@ model Professor {
 
   departments Department[]
   subjects    Subject[]
+  schedules   Schedule[]
 }
 
 model Subject {
@@ -128,6 +133,7 @@ model Subject {
   students            SubjectRegistration[]
   exams               Exam[]
   correlativeSubjects CorrelativeSubject[]
+  schedules           Schedule[] // horarios de clase de una materia
 
   @@index([careerId])
   @@index([departmentId])
@@ -136,10 +142,13 @@ model Subject {
 model CorrelativeSubject {
   id String @id @default(uuid())
 
-  subject   Subject? @relation(fields: [subjectId], references: [id])
-  subjectId String?
+  subject    Subject?  @relation(fields: [subjectId], references: [id])
+  subjectId  String?
+  schedule   Schedule? @relation(fields: [scheduleId], references: [id]) // Horario de clase 
+  scheduleId String?
 
   @@index([subjectId])
+  @@index([scheduleId])
 }
 
 model Exam {
@@ -210,4 +219,61 @@ model Reply {
   date    DateTime
 
   @@index([userId])
+}
+
+model Schedule {
+  id String @id @default(uuid())
+
+  room        String // Aula o lugar en el que se dicta la clase
+  days        String[] // Días en los que se dicta la clase (ej. ["Monday", "Wednesday"])
+  startTime   String // Hora de inicio (podría cambiarse a DateTime si lo prefieres)
+  endTime     String // Hora de fin
+  semester    String
+  startDate   DateTime
+  endDate     DateTime
+  capacity    Int
+  enrolled    Int // Cantidad de estudiantes inscritos
+  waitlist    Int? // Cantidad de estudiantes en la lista de espera
+  description String?
+
+  typeSchedule TypeSchedule   @default(TEORICA)
+  status       ScheduleStatus @default(ACTIVO)
+
+  subject     Subject   @relation(fields: [subjectId], references: [id])
+  subjectId   String
+  professor   Professor @relation(fields: [professorId], references: [id])
+  professorId String
+
+  students Student[] // estudiantes inscritos
+
+  sessions Session[] // Relación con sesiones de clase
+
+  prerequisites CorrelativeSubject[]
+
+  @@index([subjectId])
+  @@index([professorId])
+}
+
+enum ScheduleStatus {
+  ACTIVO
+  CANCELADO
+  COMPLETADO
+}
+
+model Session {
+  id         String   @id @default(uuid())
+  schedule   Schedule @relation(fields: [scheduleId], references: [id])
+  scheduleId String
+  date       DateTime
+  topic      String
+  attendance Int
+
+  @@index([scheduleId])
+}
+
+enum TypeSchedule {
+  TEORICA
+  PRACTICA
+  LABORATORIO
+  OTRO
 }
