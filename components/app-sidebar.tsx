@@ -179,7 +179,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           user={{
             avatar: "/placeholder.svg?height=32&width=32",
             email: "",
-            name: "Usuario Estudiante",
+            name: "Ivan Bongiovanni",
           }}
         />
       </SidebarFooter>
