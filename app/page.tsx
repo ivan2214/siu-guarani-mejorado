@@ -24,10 +24,10 @@ export default function Home() {
           </p>
           <div className="flex flex-col justify-center gap-4 sm:flex-row">
             <Button asChild size="lg">
-              <Link href="/dashboard/login">Iniciar Sesión</Link>
+              <Link href="/login">Iniciar Sesión</Link>
             </Button>
             <Button asChild variant="outline" size="lg">
-              <Link href="/dashboard/register">Registrarse</Link>
+              <Link href="/register">Registrarse</Link>
             </Button>
           </div>
         </div>
@@ -46,7 +46,7 @@ export default function Home() {
             </CardContent>
             <CardFooter>
               <Button variant="ghost" className="w-full" asChild>
-                <Link href="/dashboard/login?role=student">
+                <Link href="/login">
                   Acceder <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
@@ -66,7 +66,7 @@ export default function Home() {
             </CardContent>
             <CardFooter>
               <Button variant="ghost" className="w-full" asChild>
-                <Link href="/dashboard/login?role=teacher">
+                <Link href="/login">
                   Acceder <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
@@ -86,7 +86,7 @@ export default function Home() {
             </CardContent>
             <CardFooter>
               <Button variant="ghost" className="w-full" asChild>
-                <Link href="/dashboard/login?role=admin">
+                <Link href="/login">
                   Acceder <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
