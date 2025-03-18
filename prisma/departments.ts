@@ -1,3 +1,4 @@
+import type { DepartmentWithRelations } from "@/types";
 import { type Prisma, PrismaClient, type Department } from "@prisma/client";
 
 const prisma = new PrismaClient();
@@ -5,11 +6,11 @@ const prisma = new PrismaClient();
 // Obtener todos los departamentos con filtro opcional
 export const getDepartments = async (
   filter?: Prisma.DepartmentWhereInput
-): Promise<Department[]> => {
+): Promise<DepartmentWithRelations[]> => {
   return await prisma.department.findMany({
     where: filter,
     include: {
-      courses: true,
+      subjects: true,
       professors: true,
     },
   });
@@ -18,11 +19,11 @@ export const getDepartments = async (
 // Obtener un departamento por ID
 export const getDepartmentById = async (
   id: string
-): Promise<Department | null> => {
+): Promise<DepartmentWithRelations | null> => {
   return await prisma.department.findUnique({
     where: { id },
     include: {
-      courses: true,
+      subjects: true,
       professors: true,
     },
   });

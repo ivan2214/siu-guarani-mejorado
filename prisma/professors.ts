@@ -1,4 +1,5 @@
-import { type Prisma, PrismaClient, type Professor } from "@prisma/client";
+import type { ProfessorWithRelations } from "@/types";
+import { type Prisma, PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -6,13 +7,14 @@ const prisma = new PrismaClient();
 
 export const getProfessors = async (
   filter?: Prisma.ProfessorWhereInput
-): Promise<Professor[]> => {
+): Promise<ProfessorWithRelations[]> => {
   return await prisma.professor.findMany({
     where: filter,
     include: {
       user: true,
-      department: true,
-      courses: true,
+      departments: true,
+      subjects: true,
+      schedules: true,
     },
   });
 };
@@ -20,28 +22,23 @@ export const getProfessors = async (
 // Obtener un profesor por ID
 export const getProfessorById = async (
   id: string
-): Promise<Professor | null> => {
+): Promise<ProfessorWithRelations | null> => {
   return await prisma.professor.findUnique({
     where: { id },
     include: {
       user: true,
-      department: true,
-      courses: true,
+      departments: true,
+      subjects: true,
+      schedules: true,
     },
   });
 };
 
 // Crear un profesor
 
-export const createProfessor = async (
-  data: Prisma.ProfessorCreateInput
-): Promise<Professor> => {
+export const createProfessor = async (data: Prisma.ProfessorCreateInput) => {
   return await prisma.professor.create({
     data,
-    include: {
-      user: true,
-      department: true,
-    },
   });
 };
 
@@ -49,26 +46,16 @@ export const createProfessor = async (
 export const updateProfessor = async (
   id: string,
   data: Prisma.ProfessorUpdateInput
-): Promise<Professor | null> => {
+) => {
   return await prisma.professor.update({
     where: { id },
     data,
-    include: {
-      user: true,
-      department: true,
-    },
   });
 };
 
 // Eliminar un profesor
-export const deleteProfessor = async (
-  id: string
-): Promise<Professor | null> => {
+export const deleteProfessor = async (id: string) => {
   return await prisma.professor.delete({
     where: { id },
-    include: {
-      user: true,
-      department: true,
-    },
   });
 };

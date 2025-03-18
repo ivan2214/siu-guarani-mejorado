@@ -106,6 +106,17 @@ export type NotificationWithRelations = Prisma.NotificationGetPayload<{
   };
 }>;
 
+// Tipo para incluir todas las relacion en Schedule
+export type ScheduleWithRelations = Prisma.ScheduleGetPayload<{
+  include: {
+    professor: true;
+    prerequisites: true;
+    sessions: true;
+    students: true;
+    subject: true;
+  };
+}>;
+
 export interface NavMainItem {
   title: string;
   url: string;

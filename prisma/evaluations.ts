@@ -1,66 +1,57 @@
-import { type Prisma, PrismaClient, type Evaluation } from "@prisma/client";
+import type { ExamWithRelations } from "@/types";
+import { type Prisma, PrismaClient, type Exam } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
 // Obtener todas las evaluaciones con filtro opcional
-export const getEvaluations = async (
-  filter?: Prisma.EvaluationWhereInput
-): Promise<Evaluation[]> => {
-  return await prisma.evaluation.findMany({
+export const getExams = async (
+  filter?: Prisma.ExamWhereInput
+): Promise<ExamWithRelations[]> => {
+  return await prisma.exam.findMany({
     where: filter,
     include: {
-      course: {
-        include: {
-          students: true,
-          professor: true,
-        },
-      },
+      studentsEnrolled: true,
+      subject: true,
     },
   });
 };
 
 // Obtener una evaluación por ID
-export const getEvaluationById = async (
+export const getExamById = async (
   id: string
-): Promise<Evaluation | null> => {
-  return await prisma.evaluation.findUnique({
+): Promise<ExamWithRelations | null> => {
+  return await prisma.exam.findUnique({
     where: { id },
     include: {
-      course: {
-        include: {
-          students: true,
-          professor: true,
-        },
-      },
+      studentsEnrolled: true,
+      subject: true,
     },
   });
 };
 
 // Crear una evaluación
-export const createEvaluation = async (
-  data: Prisma.EvaluationCreateInput
-): Promise<Evaluation> => {
-  return await prisma.evaluation.create({
+export const createExam = async (
+  data: Prisma.ExamCreateInput
+): Promise<Exam> => {
+  return await prisma.exam.create({
     data,
   });
 };
 
 // Actualizar una evaluación
-export const updateEvaluation = async (
+export const updateExam = async (
   id: string,
-  data: Prisma.EvaluationUpdateInput
-): Promise<Evaluation | null> => {
-  return await prisma.evaluation.update({
+  data: Prisma.ExamUpdateInput
+): Promise<Exam | null> => {
+  return await prisma.exam.update({
     where: { id },
     data,
   });
 };
 
 // Eliminar una evaluación
-export const deleteEvaluation = async (
-  id: string
-): Promise<Evaluation | null> => {
-  return await prisma.evaluation.delete({
+export const deleteExam = async (id: string): Promise<Exam | null> => {
+  return await prisma.exam.delete({
     where: { id },
   });
 };

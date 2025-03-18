@@ -1,74 +1,93 @@
-import { type Prisma, PrismaClient, type Professor } from "@prisma/client";
+import type { StudentWithRelations } from "@/types";
+import { type Prisma, PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-// Obtener todos los profesores con filtros opcionales
-
-export const getProfessors = async (
-  filter?: Prisma.ProfessorWhereInput
-): Promise<Professor[]> => {
-  return await prisma.professor.findMany({
-    where: filter,
-    include: {
-      user: true,
-      department: true,
-      courses: true,
-    },
-  });
+// Obtener todos los estudiantes con filtros opcionales
+type StudentFilter = Prisma.StudentWhereInput;
+export const getStudents = async (
+  filter?: StudentFilter
+): Promise<StudentWithRelations[]> => {
+  try {
+    return prisma.student.findMany({
+      where: filter,
+      include: {
+        user: true,
+        subjectRecords: {
+          include: {
+            subject: true,
+          },
+        },
+        academicRecord: true,
+        schedule: true,
+      },
+    });
+  } catch (error) {
+    console.error("Error al obtener estudiantes:", error);
+    throw new Error("No se pudieron obtener los estudiantes");
+  }
 };
 
-// Obtener un profesor por ID
-export const getProfessorById = async (
+// Obtener un estudiante por ID con sus relaciones
+export const getStudentById = async (
   id: string
-): Promise<Professor | null> => {
-  return await prisma.professor.findUnique({
-    where: { id },
-    include: {
-      user: true,
-      department: true,
-      courses: true,
-    },
-  });
+): Promise<StudentWithRelations | null> => {
+  try {
+    return prisma.student.findUnique({
+      where: { id },
+      include: {
+        user: true,
+        subjectRecords: {
+          include: {
+            subject: true,
+          },
+        },
+        academicRecord: true,
+        schedule: true,
+      },
+    });
+  } catch (error) {
+    console.error(`Error al obtener estudiante con ID ${id}:`, error);
+    throw new Error("No se pudo obtener el estudiante");
+  }
 };
 
-// Crear un profesor
-
-export const createProfessor = async (
-  data: Prisma.ProfessorCreateInput
-): Promise<Professor> => {
-  return await prisma.professor.create({
-    data,
-    include: {
-      user: true,
-      department: true,
-    },
-  });
+// Crear un estudiante
+export const createStudent = async (data: Prisma.StudentCreateInput) => {
+  try {
+    return prisma.student.create({
+      data,
+    });
+  } catch (error) {
+    console.error("Error al crear estudiante:", error);
+    throw new Error("No se pudo crear el estudiante");
+  }
 };
 
-// Actualizar un profesor
-export const updateProfessor = async (
+// Actualizar un estudiante
+export const updateStudent = async (
   id: string,
-  data: Prisma.ProfessorUpdateInput
-): Promise<Professor | null> => {
-  return await prisma.professor.update({
-    where: { id },
-    data,
-    include: {
-      user: true,
-      department: true,
-    },
-  });
+  data: Omit<Partial<Prisma.StudentUpdateInput>, "id">
+) => {
+  try {
+    return prisma.student.update({
+      where: { id },
+      data,
+    });
+  } catch (error) {
+    console.error(`Error al actualizar estudiante con ID ${id}:`, error);
+    throw new Error("No se pudo actualizar el estudiante");
+  }
 };
 
-// Eliminar un profesor
-export const deleteProfessor = async (
-  id: string
-): Promise<Professor | null> => {
-  return await prisma.professor.delete({
-    where: { id },
-    include: {
-      user: true,
-      department: true,
-    },
-  });
+// Eliminar un estudiante
+export const deleteStudent = async (id: string) => {
+  try {
+    return prisma.student.delete({
+      where: { id },
+    });
+  } catch (error) {
+    console.error(`Error al eliminar estudiante con ID ${id}:`, error);
+    throw new Error("No se pudo eliminar el estudiante");
+  }
 };

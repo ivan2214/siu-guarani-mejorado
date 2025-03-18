@@ -1,3 +1,4 @@
+import type { ReplyWithRelations } from "@/types";
 import { type Prisma, PrismaClient, type Reply } from "@prisma/client";
 
 const prisma = new PrismaClient();
@@ -5,7 +6,7 @@ const prisma = new PrismaClient();
 // Obtener todas las respuestas con filtro opcional
 export const getReplies = async (
   filter?: Prisma.ReplyWhereInput
-): Promise<Reply[]> => {
+): Promise<ReplyWithRelations[]> => {
   return await prisma.reply.findMany({
     where: filter,
     include: {
@@ -15,13 +16,14 @@ export const getReplies = async (
           professor: true,
         },
       },
-      communication: true,
     },
   });
 };
 
 // Obtener una respuesta por ID
-export const getReplyById = async (id: string): Promise<Reply | null> => {
+export const getReplyById = async (
+  id: string
+): Promise<ReplyWithRelations | null> => {
   return await prisma.reply.findUnique({
     where: { id },
     include: {
@@ -31,7 +33,6 @@ export const getReplyById = async (id: string): Promise<Reply | null> => {
           professor: true,
         },
       },
-      communication: true,
     },
   });
 };

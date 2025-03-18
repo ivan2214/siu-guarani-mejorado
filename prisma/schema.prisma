@@ -23,10 +23,19 @@ model User {
 
   student   Student?
   professor Professor?
+  admin     Admin?
 
   messages      Message[]
   replies       Reply[]
   notifications Notification[]
+}
+
+model Admin {
+  id     String @id @default(uuid())
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @unique
+
+  communication Communication[] // Comunicaciones creadas por el admin
 }
 
 enum Role {
@@ -176,10 +185,12 @@ enum ExamType {
 }
 
 model Career {
-  id       String    @id @default(uuid())
-  name     String
-  code     String    @unique
-  subjects Subject[]
+  id   String @id @default(uuid())
+  name String
+  code String @unique
+
+  subjects               Subject[]
+  audiencesCommunication AudienceCommunication[]
 }
 
 model Department {
@@ -276,4 +287,52 @@ enum TypeSchedule {
   PRACTICA
   LABORATORIO
   OTRO
+}
+
+model Communication {
+  id       Int      @id @default(autoincrement())
+  title    String
+  content  String
+  sentDate DateTime
+  tags     String[]
+
+  type     TypeCommunication
+  status   StatusCommunication
+  priority PriorityCommunication
+
+  sender   Admin  @relation(fields: [senderId], references: [id])
+  senderId String
+
+  audience AudienceCommunication[] // carreras a las que se envía la comunicación
+
+  @@index([senderId])
+}
+
+model AudienceCommunication {
+  id Int @id @default(autoincrement())
+
+  career          Career         @relation(fields: [careerId], references: [id])
+  careerId        String
+  Communication   Communication? @relation(fields: [communicationId], references: [id])
+  communicationId Int?
+
+  @@index([careerId])
+  @@index([communicationId])
+}
+
+enum TypeCommunication {
+  ANUNCIO
+  NOTIFICACION
+}
+
+enum StatusCommunication {
+  ENVIADO
+  BORRADOR
+}
+
+enum PriorityCommunication {
+  BAJO
+  MEDIO
+  ALTO
+  URGENTE
 }
