@@ -194,7 +194,7 @@ export default function CareerDetailPage() {
   const handleDeleteCareer = () => {
     toast.success("Carrera eliminada correctamente");
     setIsDeleteDialogOpen(false);
-    router.push("/manage/careers");
+    router.push("/dashboard/admin/careers");
   };
 
   const handleAddSubject = () => {
@@ -206,11 +206,7 @@ export default function CareerDetailPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => router.back()}
-          >
+          <Button variant="ghost" size="sm" onClick={() => router.back()}>
             <ArrowLeft className="mr-2 h-4 w-4" />
             Volver
           </Button>
@@ -634,14 +630,16 @@ export default function CareerDetailPage() {
                     </Button>
                     <Button className="w-full" variant="outline" asChild>
                       <Link
-                        href={`/manage/careers/${params.id}/edit-curriculum`}
+                        href={`/dashboard/admin/careers/${params.id}/edit-curriculum`}
                       >
                         <Book className="mr-2 h-4 w-4" />
                         Editar plan de estudios
                       </Link>
                     </Button>
                     <Button className="w-full" variant="outline" asChild>
-                      <Link href={`/manage/careers/${params.id}/students`}>
+                      <Link
+                        href={`/dashboard/admin/careers/${params.id}/students`}
+                      >
                         <Users className="mr-2 h-4 w-4" />
                         Ver estudiantes
                       </Link>
@@ -791,7 +789,9 @@ export default function CareerDetailPage() {
                             <TableCell>{subject.credits}</TableCell>
                             <TableCell className="text-right">
                               <Button variant="ghost" size="sm" asChild>
-                                <Link href={`/manage/courses/${subject.id}`}>
+                                <Link
+                                  href={`/dashboard/admin/courses/${subject.id}`}
+                                >
                                   Ver detalles
                                 </Link>
                               </Button>
@@ -892,7 +892,7 @@ export default function CareerDetailPage() {
                         </TableCell>
                         <TableCell className="text-right">
                           <Button variant="ghost" size="sm" asChild>
-                            <Link href={`/manage/users/${student.id}`}>
+                            <Link href={`/dashboard/admin/users/${student.id}`}>
                               Ver perfil
                             </Link>
                           </Button>

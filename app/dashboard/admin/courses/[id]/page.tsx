@@ -249,7 +249,7 @@ export default function CourseDetailPage() {
   const handleDeleteCourse = () => {
     toast.success("Materia eliminada correctamente");
     setIsDeleteDialogOpen(false);
-    router.push("/manage/courses");
+    router.push("/dashboard/admin/courses");
   };
 
   const handleAddStudent = () => {
@@ -261,11 +261,7 @@ export default function CourseDetailPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => router.back()}
-          >
+          <Button variant="ghost" size="sm" onClick={() => router.back()}>
             <ArrowLeft className="mr-2 h-4 w-4" />
             Volver
           </Button>
@@ -747,13 +743,17 @@ export default function CourseDetailPage() {
                       Exportar datos
                     </Button>
                     <Button className="w-full" variant="outline" asChild>
-                      <Link href={`/manage/courses/${params.id}/edit-syllabus`}>
+                      <Link
+                        href={`/dashboard/admin/courses/${params.id}/edit-syllabus`}
+                      >
                         <Book className="mr-2 h-4 w-4" />
                         Editar programa
                       </Link>
                     </Button>
                     <Button className="w-full" variant="outline" asChild>
-                      <Link href={`/manage/courses/${params.id}/students`}>
+                      <Link
+                        href={`/dashboard/admin/courses/${params.id}/students`}
+                      >
                         <Users className="mr-2 h-4 w-4" />
                         Ver estudiantes
                       </Link>
@@ -839,7 +839,7 @@ export default function CourseDetailPage() {
             </CardContent>
             <CardFooter>
               <Button variant="outline" className="w-full" asChild>
-                <Link href={`/manage/schedules?course=${course.id}`}>
+                <Link href={`/dashboard/admin/schedules?course=${course.id}`}>
                   <Calendar className="mr-2 h-4 w-4" />
                   Administrar horarios
                 </Link>
@@ -999,7 +999,7 @@ export default function CourseDetailPage() {
                         <TableCell>{student.attendance}%</TableCell>
                         <TableCell className="text-right">
                           <Button variant="ghost" size="sm" asChild>
-                            <Link href={`/manage/users/${student.id}`}>
+                            <Link href={`/dashboard/admin/users/${student.id}`}>
                               Ver perfil
                             </Link>
                           </Button>
