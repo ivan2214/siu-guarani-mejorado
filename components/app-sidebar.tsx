@@ -36,7 +36,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
   // Define menu items based on user role
   // This would typically come from an auth context
-  const userRole: "student" | "teacher" | "admin" = "admin"; // Could be "student", "teacher", or "admin"
+  const userRole: "student" | "teacher" | "admin" = "teacher"; // Could be "student", "teacher", or "admin"
 
   const studentMenuItems: NavMainItem[] = [
     {
@@ -65,11 +65,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       url: "/dashboard/student/curriculum",
     },
     {
-      icon: Calendar,
-      title: "Calendario",
-      url: "/dashboard/student/calendar",
-    },
-    {
       icon: MessageSquare,
       title: "Mensajes",
       url: "/dashboard/student/messages",
@@ -93,11 +88,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       title: "Asistencia",
       url: "/dashboard/teacher/attendance",
     },
-    {
-      icon: Calendar,
-      title: "Calendario",
-      url: "/dashboard/teacher/calendar",
-    },
+
     {
       icon: MessageSquare,
       title: "Mensajes",
