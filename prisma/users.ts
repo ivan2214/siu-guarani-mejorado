@@ -14,20 +14,22 @@ export const getUsers = async (
       messages: true,
       student: {
         include: {
-          courses: {
+          enrollments: {
             include: {
               course: true,
             },
           },
+          academicRecord: true,
         },
       },
       professor: {
         include: {
-          department: true,
+          departments: true,
           courses: true,
         },
       },
       replies: true,
+      notifications: true,
     },
   });
 };
@@ -42,24 +44,27 @@ export const getUserById = async (
       messages: true,
       student: {
         include: {
-          courses: {
+          enrollments: {
             include: {
               course: true,
             },
           },
+          academicRecord: true,
         },
       },
       professor: {
         include: {
-          department: true,
+          departments: true,
           courses: true,
         },
       },
       replies: true,
+      notifications: true,
     },
   });
 };
 
+// Crear un usuario
 export const createUser = async (
   data: Prisma.UserCreateInput
 ): Promise<UserWithRelations> => {
@@ -69,20 +74,22 @@ export const createUser = async (
       messages: true,
       student: {
         include: {
-          courses: {
+          enrollments: {
             include: {
               course: true,
             },
           },
+          academicRecord: true,
         },
       },
       professor: {
         include: {
-          department: true,
+          departments: true,
           courses: true,
         },
       },
       replies: true,
+      notifications: true,
     },
   });
 };
@@ -99,20 +106,22 @@ export const updateUser = async (
       messages: true,
       student: {
         include: {
-          courses: {
+          enrollments: {
             include: {
               course: true,
             },
           },
+          academicRecord: true,
         },
       },
       professor: {
         include: {
-          department: true,
+          departments: true,
           courses: true,
         },
       },
       replies: true,
+      notifications: true,
     },
   });
 };
@@ -127,20 +136,22 @@ export const deleteUser = async (
       messages: true,
       student: {
         include: {
-          courses: {
+          enrollments: {
             include: {
               course: true,
             },
           },
+          academicRecord: true,
         },
       },
       professor: {
         include: {
-          department: true,
+          departments: true,
           courses: true,
         },
       },
       replies: true,
+      notifications: true,
     },
   });
 };

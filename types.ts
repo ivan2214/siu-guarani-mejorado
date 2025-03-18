@@ -1,5 +1,4 @@
 import type { LucideIcon } from "lucide-react";
-
 import type { Prisma } from "@prisma/client";
 
 // Tipo para incluir todas las relaciones en User
@@ -8,20 +7,22 @@ export type UserWithRelations = Prisma.UserGetPayload<{
     messages: true;
     student: {
       include: {
-        courses: {
+        enrollments: {
           include: {
             course: true;
           };
         };
+        academicRecord: true;
       };
     };
     professor: {
       include: {
-        department: true;
+        departments: true;
         courses: true;
       };
     };
     replies: true;
+    notifications: true;
   };
 }>;
 
@@ -29,11 +30,12 @@ export type UserWithRelations = Prisma.UserGetPayload<{
 export type StudentWithRelations = Prisma.StudentGetPayload<{
   include: {
     user: true;
-    courses: {
+    enrollments: {
       include: {
         course: true;
       };
     };
+    academicRecord: true;
   };
 }>;
 
@@ -41,7 +43,7 @@ export type StudentWithRelations = Prisma.StudentGetPayload<{
 export type ProfessorWithRelations = Prisma.ProfessorGetPayload<{
   include: {
     user: true;
-    department: true;
+    departments: true;
     courses: true;
   };
 }>;
@@ -51,8 +53,7 @@ export type CourseWithRelations = Prisma.CourseGetPayload<{
   include: {
     career: true;
     department: true;
-    professor: true;
-    schedule: true;
+    professors: true;
     students: {
       include: {
         student: true;
@@ -73,7 +74,6 @@ export type MessageWithRelations = Prisma.MessageGetPayload<{
 export type ReplyWithRelations = Prisma.ReplyGetPayload<{
   include: {
     user: true;
-    communication: true;
   };
 }>;
 
@@ -87,26 +87,9 @@ export type EvaluationWithRelations = Prisma.EvaluationGetPayload<{
 // Tipo para incluir todas las relaciones en Career
 export type CareerWithRelations = Prisma.CareerGetPayload<{
   include: {
-    curriculums: true;
     courses: true;
   };
 }>;
-
-// Tipo para incluir todas las relaciones en Curriculum
-export type CurriculumWithRelations = Prisma.CurriculumGetPayload<{
-  include: {
-    career: true;
-    subjects: true;
-  };
-}>;
-
-// Tipo para incluir todas las relaciones en CurriculumSubject
-export type CurriculumSubjectWithRelations =
-  Prisma.CurriculumSubjectGetPayload<{
-    include: {
-      curriculum: true;
-    };
-  }>;
 
 // Tipo para incluir todas las relaciones en Department
 export type DepartmentWithRelations = Prisma.DepartmentGetPayload<{
@@ -116,17 +99,10 @@ export type DepartmentWithRelations = Prisma.DepartmentGetPayload<{
   };
 }>;
 
-// Tipo para incluir todas las relaciones en Communication
-export type CommunicationWithRelations = Prisma.CommunicationGetPayload<{
+// Tipo para incluir todas las relaciones en Notification
+export type NotificationWithRelations = Prisma.NotificationGetPayload<{
   include: {
-    replies: true;
-  };
-}>;
-
-// Tipo para incluir todas las relaciones en Schedule
-export type ScheduleWithRelations = Prisma.ScheduleGetPayload<{
-  include: {
-    course: true;
+    user: true;
   };
 }>;
 

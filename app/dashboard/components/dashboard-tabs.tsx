@@ -22,32 +22,20 @@ import {
 import { Progress } from "@/components/ui/progress";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import type { UserWithRelations } from "@/types";
 
-type DashboardTabsProps = {
-  userData: {
-    enrollments: {
-      name: string;
-      code: string;
-      description: string | null;
-      capacity: number;
-    }[]; // Materias actuales
-    examRegistrations: { name: string; date: Date }[]; // Exámenes próximos
-    approvedSubjects: { name: string; grade: number | null }[]; // Materias aprobadas
-    careerProgress: number; // Avance de carrera
-    generalAverage: string; // Promedio general
-    counts: {
-      enrollments: number;
-      examRegistrations: number;
-    };
-    notifications: {
-      message: string;
-      createdAt: Date;
-    }[];
-  };
+export type DashboardTabsProps = {
+  userData: UserWithRelations;
 };
 
 export const DashboardTabs: React.FC<DashboardTabsProps> = ({ userData }) => {
   const [activeTab, setActiveTab] = useState("overview");
+
+  const student = userData.student || null;
+
+  const professor = userData.professor || null;
+
+  const admin = userData || null;
 
   return (
     <Tabs
@@ -73,7 +61,7 @@ export const DashboardTabs: React.FC<DashboardTabsProps> = ({ userData }) => {
             </CardHeader>
             <CardContent>
               <div className="font-bold text-2xl">
-                {userData.enrollments.length}
+                {student?.enrollments.length}
               </div>
               <p className="text-muted-foreground text-xs">Semestre actual</p>
             </CardContent>
@@ -88,7 +76,7 @@ export const DashboardTabs: React.FC<DashboardTabsProps> = ({ userData }) => {
             </CardHeader>
             <CardContent>
               <div className="font-bold text-2xl">
-                {userData.examRegistrations.length}
+                {student?.enrollments.map}
               </div>
               <p className="text-muted-foreground text-xs">Próximos 30 días</p>
             </CardContent>
@@ -103,7 +91,7 @@ export const DashboardTabs: React.FC<DashboardTabsProps> = ({ userData }) => {
             </CardHeader>
             <CardContent>
               <div className="font-bold text-2xl">
-                {userData.generalAverage}
+                {student?.generalAverage}
               </div>
               <p className="text-muted-foreground text-xs">Escala 1-10</p>
             </CardContent>
@@ -118,7 +106,7 @@ export const DashboardTabs: React.FC<DashboardTabsProps> = ({ userData }) => {
             </CardHeader>
             <CardContent>
               <div className="font-bold text-2xl">
-                {userData.careerProgress}%
+                {student?.careerProgress}%
               </div>
               <Progress value={65} className="mt-2 h-2" />
             </CardContent>
@@ -135,7 +123,7 @@ export const DashboardTabs: React.FC<DashboardTabsProps> = ({ userData }) => {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {userData.enrollments.map((subject) => (
+                {student?.enrollments.map((subject) => (
                   <div key={subject.name} className="flex items-center">
                     <div className="mr-4 w-full">
                       <div className="mb-1 flex items-center justify-between">
@@ -161,7 +149,7 @@ export const DashboardTabs: React.FC<DashboardTabsProps> = ({ userData }) => {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {userData.examRegistrations.map((exam) => {
+                {student?.examRegistrations.map((exam) => {
                   const formattedDate = new Intl.DateTimeFormat("es-AR", {
                     day: "2-digit",
                     month: "2-digit",
@@ -208,7 +196,7 @@ export const DashboardTabs: React.FC<DashboardTabsProps> = ({ userData }) => {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {userData.notifications.map((notification) => (
+              {student?.notifications.map((notification) => (
                 <div
                   key={notification.createdAt.toString()}
                   className="flex items-start space-x-4 rounded-md border p-4"

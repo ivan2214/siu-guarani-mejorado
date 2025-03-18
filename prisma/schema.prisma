@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -15,23 +9,22 @@ datasource db {
 }
 
 model User {
-  id       String    @id @default(uuid())
-  name     String
-  email    String    @unique
-  password String
-  role     Role
-  avatar   String? // Imagen de perfil
-  messages Message[] @relation("UserMessages")
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  email     String   @unique
 
-  // Relación con Estudiantes o Profesores
-  student   Student? @relation(fields: [studentId], references: [id])
-  studentId String?  @unique
+  name     String // Nombre del usuario
+  password String // Contraseña del usuario
+  role     Role    @default(STUDENT)
+  avatar   String?
 
-  professor   Professor? @relation(fields: [professorId], references: [id])
-  professorId String?    @unique
+  userStatus UserStatus
 
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
+  student   Student?
+  professor Professor?
+
+  messages      Message[]
   replies       Reply[]
   notifications Notification[]
 }
@@ -42,60 +35,107 @@ enum Role {
   TEACHER
 }
 
+enum UserStatus {
+  ACTIVO
+  INACTIVO
+}
+
 model Student {
-  id                String             @id @default(uuid()) // Identificador único del estudiante
-  status            String // Estado actual del estudiante (activo, inactivo, egresado, etc.)
-  enrollments       Enrollment[] // Lista de inscripciones a cursos
-  examRegistrations ExamRegistration[] // Registros de exámenes presentados
-  academicRecords   AcademicRecord[] // Historial académico del estudiante
-  user              User? // Relación opcional con un usuario del sistema
-  studentCourses    StudentCourse[] // Relación con cursos matriculados por el estudiante
+  id          String       @id @default(uuid())
+  user        User?        @relation(fields: [userId], references: [id])
+  userId      String?      @unique
+  enrollments Enrollment[] // Materias inscritas por el estudiante
+
+  academicRecord AcademicRecord? // Historial académico del estudiante
 }
 
 model AcademicRecord {
-  id               String  @id @default(uuid()) // Identificador único del historial académico
-  student          Student @relation(fields: [studentId], references: [id]) // Relación con el estudiante
-  studentId        String // ID del estudiante al que pertenece este registro
-  averageGrade     Float? // Promedio general de calificaciones
-  progressPercent  Float? // Porcentaje de avance en la carrera
-  gpa              Float? // Promedio ponderado acumulado
-  completedCourses Int? // Total de cursos aprobados por el estudiante
+  id String @id @default(uuid())
+
+  averageGrade          Float? // Promedio general del estudiante
+  completedCourses      Int? // Cursos completados por el estudiante
+  coursesEnrolled       Int? // Cursos inscritos por el estudiante
+  progressPercentCarrer Float? // Porcentaje de avance en el carrer
+
+  student   Student @relation(fields: [studentId], references: [id])
+  studentId String  @unique
 
   @@index([studentId])
 }
 
 model Enrollment {
-  id        String  @id @default(uuid()) // Identificador único de la inscripción
-  student   Student @relation(fields: [studentId], references: [id]) // Relación con el estudiante
-  studentId String // ID del estudiante inscrito en el curso
-  course    Course  @relation(fields: [courseId], references: [id]) // Relación con el curso
-  courseId  String // ID del curso en el que está inscrito
-  year      Int // Año en el que se realizó la inscripción
-  semester  Int // Semestre en el que se realizó la inscripción
+  id           String   @id @default(uuid())
+  student      Student  @relation(fields: [studentId], references: [id]) // Estudiante al que pertenece la inscripción
+  studentId    String
+  course       Course   @relation(fields: [courseId], references: [id]) // Materia a la que se inscribió el estudiante
+  courseId     String
+  year         Int // Año de la inscripción
+  semester     Int // Cuatrimestre de la inscripción
+  grade        Float? // Calificación de la inscripción
+  registeredAt DateTime @default(now()) // Fecha y hora de la inscripción
 
   @@index([courseId])
   @@index([studentId])
 }
 
-model Exam {
-  id                String             @id @default(uuid()) // Identificador único del examen
-  course            Course             @relation(fields: [courseId], references: [id]) // Relación con el curso
-  courseId          String // ID del curso al que pertenece el examen
-  examRegistrations ExamRegistration[] // Lista de registros de estudiantes inscritos en este examen
+model Professor {
+  id    String @id @default(uuid())
+  name  String // Nombre del profesor
+  email String @unique // Correo del profesor 
+
+  user   User?   @relation(fields: [userId], references: [id])
+  userId String? @unique
+
+  departments Department[] // Departamentos a los que pertenece el profesor
+  courses     Course[] // materas dictadas por el profesor
+}
+
+model Course {
+  id   String @id @default(uuid())
+  code String @unique
+
+  name        String // Nombre de la materia
+  year        Int // Año de la materia
+  semester    Int // Cuatrimestre de la materia
+  description String? // Descripción de la materia
+  capacity    Int // Capacidad de la materia
+
+  career       Career     @relation(fields: [careerId], references: [id]) // La carrera a la que pertenece la materia
+  careerId     String
+  department   Department @relation(fields: [departmentId], references: [id]) // El departamento al que pertenece la materia  (catedra)
+  departmentId String
+
+  professors  Professor[] // Profesores que dictan la materia
+  students    Enrollment[] // Estudiantes matriculados en la materia
+  evaluations Evaluation[] // Evaluaciones de la materia
+
+  @@index([careerId])
+  @@index([departmentId])
+}
+
+model Evaluation {
+  id       String   @id @default(uuid())
+  name     String // Nombre de la evaluación (1 Parcial, 2 Parcial, Final, etc.)
+  date     DateTime // Fecha de la evaluación
+  course   Course   @relation(fields: [courseId], references: [id])
+  courseId String
 
   @@index([courseId])
 }
 
-model ExamRegistration {
-  id         String  @id @default(uuid()) // Identificador único del registro de examen
-  student    Student @relation(fields: [studentId], references: [id]) // Relación con el estudiante
-  studentId  String // ID del estudiante que presentó el examen
-  exam       Exam    @relation(fields: [examId], references: [id]) // Relación con el examen
-  examId     String // ID del examen presentado
-  finalGrade Float? // Nota final obtenida en el examen (opcional si aún no ha sido calificado)
+model Career {
+  id      String   @id @default(uuid())
+  name    String
+  code    String   @unique
+  courses Course[]
+}
 
-  @@index([studentId])
-  @@index([examId])
+model Department {
+  id         String      @id @default(uuid())
+  name       String
+  professors Professor[]
+  courses    Course[]
+  location   String?
 }
 
 model Notification {
@@ -109,159 +149,22 @@ model Notification {
   @@index([userId])
 }
 
-model Professor {
-  id String @id @default(uuid())
-
-  title        String
-  department   Department @relation(fields: [departmentId], references: [id])
-  courses      Course[]
-  user         User?
-  departmentId String
-
-  @@index([departmentId])
-}
-
-model Course {
-  id           String          @id @default(uuid())
-  name         String
-  code         String          @unique
-  career       Career          @relation(fields: [careerId], references: [id])
-  careerId     String
-  department   Department      @relation(fields: [departmentId], references: [id])
-  departmentId String
-  professor    Professor?      @relation(fields: [professorId], references: [id])
-  professorId  String?
-  year         Int
-  semester     Int
-  credits      Int
-  status       String
-  description  String?
-  schedule     Schedule[]
-  syllabus     Json // Contiene temas y unidades
-  bibliography Json // Lista de libros y autores
-  students     StudentCourse[]
-  evaluations  Evaluation[]
-
-  enrollments Enrollment[] // Lista de inscripciones a este curso
-  exams       Exam[] // Lista de exámenes asociados al curso
-
-  @@index([careerId])
-  @@index([departmentId])
-  @@index([professorId])
-}
-
-model StudentCourse {
-  student   Student @relation(fields: [studentId], references: [id])
-  studentId String
-  course    Course  @relation(fields: [courseId], references: [id])
-  courseId  String
-  grade     Float?
-  status    String
-
-  @@id([studentId, courseId])
-  @@index([courseId])
-}
-
-model Evaluation {
-  id        String   @id @default(uuid())
-  name      String
-  date      DateTime
-  status    String
-  published Boolean
-  course    Course   @relation(fields: [courseId], references: [id])
-  courseId  String
-
-  @@index([courseId])
-}
-
-model Career {
-  id          String       @id @default(uuid())
-  name        String
-  code        String       @unique
-  curriculums Curriculum[]
-  courses     Course[]
-}
-
-model Curriculum {
-  id               String              @id @default(uuid())
-  name             String
-  career           Career              @relation(fields: [careerId], references: [id])
-  careerId         String
-  totalCredits     Int
-  completedCredits Int
-  subjects         CurriculumSubject[]
-
-  @@index([careerId])
-}
-
-model CurriculumSubject {
-  id           String     @id @default(uuid())
-  code         String     @unique
-  name         String
-  credits      Int
-  status       String
-  grade        Float?
-  type         String
-  correlatives Json?
-  curriculum   Curriculum @relation(fields: [curriculumId], references: [id])
-  curriculumId String
-
-  @@index([curriculumId])
-}
-
-model Department {
-  id         String      @id @default(uuid())
-  name       String
-  professors Professor[]
-  courses    Course[]
-}
-
-model Schedule {
-  id       String @id @default(uuid())
-  day      String
-  time     String
-  type     String
-  location String
-  course   Course @relation(fields: [courseId], references: [id])
-  courseId String
-
-  @@index([courseId])
-}
-
-model Communication {
-  id         String   @id @default(uuid())
-  title      String
-  type       String
-  sender     String
-  recipients String
-  date       DateTime
-  status     String
-  content    String
-  views      Int
-  responses  Int
-  replies    Reply[]
-}
-
-model Reply {
-  id              String        @id @default(uuid())
-  content         String
-  user            User          @relation(fields: [userId], references: [id])
-  userId          String
-  communication   Communication @relation(fields: [communicationId], references: [id])
-  communicationId String
-  date            DateTime
-
-  @@index([communicationId])
-  @@index([userId])
-}
-
 model Message {
   id        String   @id @default(uuid())
-  sender    User     @relation("UserMessages", fields: [senderId], references: [id])
+  sender    User     @relation(fields: [senderId], references: [id])
   senderId  String
   text      String
   timestamp DateTime @default(now())
-  status    String
 
   @@index([senderId])
+}
+
+model Reply {
+  id      String   @id @default(uuid())
+  content String
+  user    User     @relation(fields: [userId], references: [id])
+  userId  String
+  date    DateTime
+
+  @@index([userId])
 }
