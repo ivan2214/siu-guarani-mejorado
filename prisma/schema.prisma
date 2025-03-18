@@ -9,25 +9,48 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  email     String   @unique
+  id        String    @id @default(uuid())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  email     String    @unique
+  dni       String    @unique
+  phone     String
+  address   String
+  name      String // Nombre del usuario
+  password  String // Contraseña del usuario
+  role      Role      @default(ESTUDIANTE)
+  avatar    String?
+  lastLogin DateTime?
 
-  name     String // Nombre del usuario
-  password String // Contraseña del usuario
-  role     Role    @default(ESTUDIANTE)
-  avatar   String?
-
-  userStatus UserStatus
+  userStatus    UserStatus
+  accountStatus AccountStatus @default(ACTIVA)
 
   student   Student?
   professor Professor?
   admin     Admin?
 
-  messages      Message[]
-  replies       Reply[]
-  notifications Notification[]
+  messages       Message[]
+  replies        Reply[]
+  notifications  Notification[]
+  recentActivity Activity[]
+}
+
+model Activity {
+  id     String   @id @default(uuid())
+  user   User     @relation(fields: [userId], references: [id])
+  userId String
+  action String
+  date   DateTime @default(now())
+
+  @@index([userId])
+}
+
+enum AccountStatus {
+  ACTIVA
+  BANEADA
+  INACTIVA
+  SUSPENDIDA
+  ELIMINADA
 }
 
 model Admin {
@@ -50,15 +73,17 @@ enum UserStatus {
 }
 
 model Student {
-  id             String                @id @default(uuid())
-  user           User?                 @relation(fields: [userId], references: [id])
-  userId         String?               @unique
-  subjectRecords SubjectRegistration[] // Materias inscritas por el estudiante
-  examRecords    ExamRegistration[]
+  id     String  @id @default(uuid())
+  user   User?   @relation(fields: [userId], references: [id])
+  userId String? @unique
 
   academicRecord AcademicRecord? // Historial académico del estudiante
   schedule       Schedule?       @relation(fields: [scheduleId], references: [id])
   scheduleId     String?
+
+  subjectRecords SubjectRegistration[] // Materias inscritas por el estudiante
+  examRecords    ExamRegistration[]
+  career         Career[] // Carreras a las que pertenece el estudiante
 
   @@index([scheduleId])
 }
@@ -188,6 +213,8 @@ model Career {
   id   String @id @default(uuid())
   name String
   code String @unique
+
+  students Student[]
 
   subjects               Subject[]
   audiencesCommunication AudienceCommunication[]

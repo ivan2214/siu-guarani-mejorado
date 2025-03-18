@@ -27,67 +27,19 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Search, UserPlus } from "lucide-react";
+import { Search } from "lucide-react";
 import Link from "next/link";
+import { getUsers } from "@/prisma/users";
+import { DialogAddUser } from "./components/dialog-add-user";
 
-// Mock data for users
-const users = [
-  {
-    id: "1",
-    name: "John Doe",
-    email: "john.doe@university.edu",
-    role: "Student",
-    status: "Active",
-    lastLogin: "2023-05-15T10:30:00",
-    avatar: "/placeholder.svg?height=40&width=40",
-  },
-  {
-    id: "2",
-    name: "Jane Smith",
-    email: "jane.smith@university.edu",
-    role: "Teacher",
-    status: "Active",
-    lastLogin: "2023-05-14T14:45:00",
-    avatar: "/placeholder.svg?height=40&width=40",
-  },
-  {
-    id: "3",
-    name: "Robert Johnson",
-    email: "robert.johnson@university.edu",
-    role: "Admin",
-    status: "Active",
-    lastLogin: "2023-05-15T09:15:00",
-    avatar: "/placeholder.svg?height=40&width=40",
-  },
-  {
-    id: "4",
-    name: "Emily Davis",
-    email: "emily.davis@university.edu",
-    role: "Student",
-    status: "Inactive",
-    lastLogin: "2023-05-10T11:20:00",
-    avatar: "/placeholder.svg?height=40&width=40",
-  },
-  {
-    id: "5",
-    name: "Michael Wilson",
-    email: "michael.wilson@university.edu",
-    role: "Teacher",
-    status: "Active",
-    lastLogin: "2023-05-14T16:30:00",
-    avatar: "/placeholder.svg?height=40&width=40",
-  },
-];
+export default async function UsersPage() {
+  const users = await getUsers();
 
-export default function UsersPage() {
   return (
     <div className="container mx-auto space-y-6 py-6">
       <div className="flex items-center justify-between">
         <h1 className="font-bold text-3xl">User Management</h1>
-        <Button className="flex items-center gap-2">
-          <UserPlus className="h-4 w-4" />
-          Add New User
-        </Button>
+        <DialogAddUser />
       </div>
 
       <Card>
@@ -153,7 +105,10 @@ export default function UsersPage() {
                         <TableCell>
                           <div className="flex items-center gap-3">
                             <Avatar>
-                              <AvatarImage src={user.avatar} alt={user.name} />
+                              <AvatarImage
+                                src={user.avatar || ""}
+                                alt={user.name}
+                              />
                               <AvatarFallback>
                                 {user.name.substring(0, 2).toUpperCase()}
                               </AvatarFallback>
@@ -169,9 +124,9 @@ export default function UsersPage() {
                         <TableCell>
                           <Badge
                             variant={
-                              user.role === "Admin"
+                              user.role === "ADMIN"
                                 ? "default"
-                                : user.role === "Teacher"
+                                : user.role === "PROFESOR"
                                 ? "outline"
                                 : "secondary"
                             }
@@ -182,21 +137,23 @@ export default function UsersPage() {
                         <TableCell>
                           <Badge
                             variant={
-                              user.status === "Active"
+                              user.userStatus === "ACTIVO"
                                 ? "success"
                                 : "destructive"
                             }
                           >
-                            {user.status}
+                            {user.userStatus}
                           </Badge>
                         </TableCell>
-                        <TableCell>
-                          {new Date(user.lastLogin).toLocaleDateString()} at{" "}
-                          {new Date(user.lastLogin).toLocaleTimeString([], {
-                            hour: "2-digit",
-                            minute: "2-digit",
-                          })}
-                        </TableCell>
+                        {user.lastLogin && (
+                          <TableCell>
+                            {new Date(user.lastLogin).toLocaleDateString()} at{" "}
+                            {new Date(user.lastLogin).toLocaleTimeString([], {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            })}
+                          </TableCell>
+                        )}
                         <TableCell className="text-right">
                           <Link href={`/dashboard/admin/users/${user.id}`}>
                             <Button variant="ghost" size="sm">

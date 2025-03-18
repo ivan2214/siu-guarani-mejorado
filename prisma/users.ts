@@ -1,4 +1,4 @@
-import { type Prisma, PrismaClient } from "@prisma/client";
+import { type Prisma, PrismaClient, type User } from "@prisma/client";
 import type { UserWithRelations } from "@/types";
 
 const prisma = new PrismaClient();
@@ -21,16 +21,22 @@ export const getUsers = async (
               },
             },
             academicRecord: true,
+            career: true,
+            examRecords: true,
+            schedule: true,
           },
         },
         professor: {
           include: {
             departments: true,
             subjects: true,
+            schedules: true,
           },
         },
         replies: true,
         notifications: true,
+        admin: true,
+        recentActivity: true,
       },
     });
   } catch (error) {
@@ -56,16 +62,22 @@ export const getUserById = async (
               },
             },
             academicRecord: true,
+            career: true,
+            examRecords: true,
+            schedule: true,
           },
         },
         professor: {
           include: {
             departments: true,
             subjects: true,
+            schedules: true,
           },
         },
         replies: true,
         notifications: true,
+        admin: true,
+        recentActivity: true,
       },
     });
   } catch (error) {
@@ -77,31 +89,10 @@ export const getUserById = async (
 // Crear un usuario
 export const createUser = async (
   data: Prisma.UserCreateInput
-): Promise<UserWithRelations> => {
+): Promise<User> => {
   try {
     return prisma.user.create({
       data,
-      include: {
-        messages: true,
-        student: {
-          include: {
-            subjectRecords: {
-              include: {
-                subject: true,
-              },
-            },
-            academicRecord: true,
-          },
-        },
-        professor: {
-          include: {
-            departments: true,
-            subjects: true,
-          },
-        },
-        replies: true,
-        notifications: true,
-      },
     });
   } catch (error) {
     console.error("Error al crear usuario:", error);
@@ -113,32 +104,11 @@ export const createUser = async (
 export const updateUser = async (
   id: string,
   data: Omit<Partial<Prisma.UserUpdateInput>, "id">
-): Promise<UserWithRelations | null> => {
+): Promise<User | null> => {
   try {
     return prisma.user.update({
       where: { id },
       data,
-      include: {
-        messages: true,
-        student: {
-          include: {
-            subjectRecords: {
-              include: {
-                subject: true,
-              },
-            },
-            academicRecord: true,
-          },
-        },
-        professor: {
-          include: {
-            departments: true,
-            subjects: true,
-          },
-        },
-        replies: true,
-        notifications: true,
-      },
     });
   } catch (error) {
     console.error(`Error al actualizar usuario con ID ${id}:`, error);
@@ -147,33 +117,10 @@ export const updateUser = async (
 };
 
 // Eliminar un usuario
-export const deleteUser = async (
-  id: string
-): Promise<UserWithRelations | null> => {
+export const deleteUser = async (id: string): Promise<User | null> => {
   try {
     return prisma.user.delete({
       where: { id },
-      include: {
-        messages: true,
-        student: {
-          include: {
-            subjectRecords: {
-              include: {
-                subject: true,
-              },
-            },
-            academicRecord: true,
-          },
-        },
-        professor: {
-          include: {
-            departments: true,
-            subjects: true,
-          },
-        },
-        replies: true,
-        notifications: true,
-      },
     });
   } catch (error) {
     console.error(`Error al eliminar usuario con ID ${id}:`, error);

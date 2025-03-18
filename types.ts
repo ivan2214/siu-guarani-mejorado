@@ -13,20 +13,26 @@ export type UserWithRelations = Prisma.UserGetPayload<{
           };
         };
         academicRecord: true;
+        career: true;
+        examRecords: true;
+        schedule: true;
       };
     };
     professor: {
       include: {
         departments: true;
         subjects: true;
+        schedules: true;
       };
     };
     replies: true;
     notifications: true;
+    recentActivity: true;
+    admin: true;
   };
 }>;
 
-// Tipo para incluir todas las relaciones en Student
+/* // Tipo para incluir todas las relaciones en Student
 export type StudentWithRelations = Prisma.StudentGetPayload<{
   include: {
     user: true;
@@ -36,6 +42,7 @@ export type StudentWithRelations = Prisma.StudentGetPayload<{
       };
     };
     academicRecord: true;
+    career: true;
   };
 }>;
 
@@ -46,7 +53,7 @@ export type ProfessorWithRelations = Prisma.ProfessorGetPayload<{
     departments: true;
     subjects: true;
   };
-}>;
+}>; */
 
 // Tipo para incluir todas las relaciones en Subject
 export type SubjectWithRelations = Prisma.SubjectGetPayload<{

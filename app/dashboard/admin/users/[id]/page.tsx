@@ -19,43 +19,22 @@ import {
   Calendar,
   BookOpen,
   Clock,
-  Activity,
 } from "lucide-react";
 import Link from "next/link";
+import { getUserById } from "@/prisma/users";
+import { notFound } from "next/navigation";
 
-// Mock user data
-const user = {
-  id: "1",
-  name: "John Doe",
-  email: "john.doe@university.edu",
-  phone: "+1 (555) 123-4567",
-  address: "123 Campus Drive, University City, CA 90210",
-  role: "Student",
-  status: "Active",
-  enrollmentDate: "2021-09-01",
-  lastLogin: "2023-05-15T10:30:00",
-  avatar: "/placeholder.svg?height=128&width=128",
-  studentId: "STU2021001",
-  program: "Computer Science",
-  semester: "4th",
-  gpa: "3.8",
-  credits: "72",
-  courses: [
-    { id: "CS101", name: "Introduction to Programming", grade: "A" },
-    { id: "CS201", name: "Data Structures", grade: "A-" },
-    { id: "MATH101", name: "Calculus I", grade: "B+" },
-    { id: "ENG101", name: "English Composition", grade: "A" },
-  ],
-  attendance: "92%",
-  activities: [
-    { date: "2023-05-15T10:30:00", action: "Logged in to the system" },
-    { date: "2023-05-14T14:20:00", action: "Submitted assignment for CS201" },
-    { date: "2023-05-12T09:15:00", action: "Registered for Fall 2023 courses" },
-    { date: "2023-05-10T11:45:00", action: "Updated personal information" },
-  ],
-};
+type Params = Promise<{ id: string }>;
 
-export default function UserDetailPage({ params }: { params: { id: string } }) {
+export default async function UserDetailPage({ params }: { params: Params }) {
+  const { id } = await params;
+
+  const user = await getUserById(id);
+
+  if (!user) {
+    return notFound();
+  }
+
   return (
     <div className="container mx-auto space-y-6 py-6">
       <div className="flex items-center gap-2">
@@ -72,18 +51,18 @@ export default function UserDetailPage({ params }: { params: { id: string } }) {
           <CardContent className="pt-6">
             <div className="flex flex-col items-center text-center">
               <Avatar className="mb-4 h-32 w-32">
-                <AvatarImage src={user.avatar} alt={user.name} />
+                <AvatarImage src={user.avatar || ""} alt={user.name} />
                 <AvatarFallback>
                   {user.name.substring(0, 2).toUpperCase()}
                 </AvatarFallback>
               </Avatar>
               <h2 className="font-bold text-2xl">{user.name}</h2>
-              <p className="mb-2 text-muted-foreground">{user.studentId}</p>
+              <p className="mb-2 text-muted-foreground">{user.id}</p>
               <Badge
                 variant={
-                  user.role === "Admin"
+                  user.role === "ADMIN"
                     ? "default"
-                    : user.role === "Teacher"
+                    : user.role === "PROFESOR"
                     ? "outline"
                     : "secondary"
                 }
@@ -107,8 +86,8 @@ export default function UserDetailPage({ params }: { params: { id: string } }) {
                 <div className="flex items-center gap-2">
                   <Calendar className="h-4 w-4 text-muted-foreground" />
                   <span className="text-sm">
-                    Enrolled:{" "}
-                    {new Date(user.enrollmentDate).toLocaleDateString()}
+                    Joined
+                    {new Date(user.createdAt).toLocaleDateString()}
                   </span>
                 </div>
               </div>
@@ -173,67 +152,47 @@ export default function UserDetailPage({ params }: { params: { id: string } }) {
                     <div className="space-y-1">
                       <p className="font-medium text-sm">Status</p>
                       <p className="text-muted-foreground text-sm">
-                        {user.status}
+                        {user.userStatus}
                       </p>
                     </div>
                     <div className="space-y-1">
                       <p className="font-medium text-sm">Enrollment Date</p>
                       <p className="text-muted-foreground text-sm">
-                        {new Date(user.enrollmentDate).toLocaleDateString()}
+                        {new Date(user.createdAt).toLocaleDateString()}
                       </p>
                     </div>
-                    <div className="space-y-1">
-                      <p className="font-medium text-sm">Last Login</p>
-                      <p className="text-muted-foreground text-sm">
-                        {new Date(user.lastLogin).toLocaleDateString()} at{" "}
-                        {new Date(user.lastLogin).toLocaleTimeString([], {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })}
-                      </p>
-                    </div>
+                    {user.lastLogin && (
+                      <div className="space-y-1">
+                        <p className="font-medium text-sm">Last Login</p>
+                        <p className="text-muted-foreground text-sm">
+                          {new Date(user.lastLogin).toLocaleDateString()} at{" "}
+                          {new Date(user.lastLogin).toLocaleTimeString([], {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}
+                        </p>
+                      </div>
+                    )}
                   </div>
                 </CardContent>
               </Card>
 
               <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-                <Card>
-                  <CardHeader className="pb-2">
-                    <CardTitle className="font-medium text-sm">
-                      Program
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex items-center">
-                      <BookOpen className="mr-2 h-4 w-4 text-muted-foreground" />
-                      <span>{user.program}</span>
-                    </div>
-                  </CardContent>
-                </Card>
-                <Card>
-                  <CardHeader className="pb-2">
-                    <CardTitle className="font-medium text-sm">
-                      Semester
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex items-center">
-                      <Calendar className="mr-2 h-4 w-4 text-muted-foreground" />
-                      <span>{user.semester}</span>
-                    </div>
-                  </CardContent>
-                </Card>
-                <Card>
-                  <CardHeader className="pb-2">
-                    <CardTitle className="font-medium text-sm">GPA</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex items-center">
-                      <Activity className="mr-2 h-4 w-4 text-muted-foreground" />
-                      <span>{user.gpa}</span>
-                    </div>
-                  </CardContent>
-                </Card>
+                {user.student && (
+                  <Card>
+                    <CardHeader className="pb-2">
+                      <CardTitle className="font-medium text-sm">
+                        Program
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="flex items-center">
+                        <BookOpen className="mr-2 h-4 w-4 text-muted-foreground" />
+                        <span>{user.student.career.map((c) => c.name)}</span>
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
               </div>
             </TabsContent>
 
@@ -267,59 +226,22 @@ export default function UserDetailPage({ params }: { params: { id: string } }) {
                             </tr>
                           </thead>
                           <tbody className="divide-y divide-border">
-                            {user.courses.map((course, index) => (
-                              <tr key={index}>
+                            {user.student?.subjectRecords.map((record) => (
+                              <tr key={record.id}>
                                 <td className="px-4 py-2 text-sm">
-                                  {course.id}
+                                  {record.id}
                                 </td>
                                 <td className="px-4 py-2 text-sm">
-                                  {course.name}
+                                  {record.subject.name}
                                 </td>
                                 <td className="px-4 py-2 text-sm">
-                                  {course.grade}
+                                  {record.grade}
                                 </td>
                               </tr>
                             ))}
                           </tbody>
                         </table>
                       </div>
-                    </div>
-
-                    <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-                      <Card>
-                        <CardHeader className="pb-2">
-                          <CardTitle className="font-medium text-sm">
-                            Credits Completed
-                          </CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                          <div className="font-bold text-2xl">
-                            {user.credits}
-                          </div>
-                        </CardContent>
-                      </Card>
-                      <Card>
-                        <CardHeader className="pb-2">
-                          <CardTitle className="font-medium text-sm">
-                            GPA
-                          </CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                          <div className="font-bold text-2xl">{user.gpa}</div>
-                        </CardContent>
-                      </Card>
-                      <Card>
-                        <CardHeader className="pb-2">
-                          <CardTitle className="font-medium text-sm">
-                            Attendance
-                          </CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                          <div className="font-bold text-2xl">
-                            {user.attendance}
-                          </div>
-                        </CardContent>
-                      </Card>
                     </div>
                   </div>
                 </CardContent>
@@ -336,9 +258,9 @@ export default function UserDetailPage({ params }: { params: { id: string } }) {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
-                    {user.activities.map((activity, index) => (
+                    {user.recentActivity.map((activity) => (
                       <div
-                        key={index}
+                        key={activity.id}
                         className="flex items-start gap-4 border-b pb-4 last:border-0"
                       >
                         <div className="rounded-full bg-primary/10 p-2">
@@ -380,10 +302,12 @@ export default function UserDetailPage({ params }: { params: { id: string } }) {
                       </div>
                       <Badge
                         variant={
-                          user.status === "Active" ? "success" : "destructive"
+                          user.accountStatus === "ACTIVA"
+                            ? "success"
+                            : "destructive"
                         }
                       >
-                        {user.status}
+                        {user.accountStatus}
                       </Badge>
                     </div>
                     <Separator />
@@ -396,9 +320,9 @@ export default function UserDetailPage({ params }: { params: { id: string } }) {
                       </div>
                       <Badge
                         variant={
-                          user.role === "Admin"
+                          user.role === "ADMIN"
                             ? "default"
-                            : user.role === "Teacher"
+                            : user.role === "PROFESOR"
                             ? "outline"
                             : "secondary"
                         }

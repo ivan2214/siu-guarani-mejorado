@@ -20,6 +20,8 @@ export const getStudents = async (
         },
         academicRecord: true,
         schedule: true,
+        career: true,
+        examRecords: true,
       },
     });
   } catch (error) {
@@ -44,6 +46,8 @@ export const getStudentById = async (
         },
         academicRecord: true,
         schedule: true,
+        career: true,
+        examRecords: true,
       },
     });
   } catch (error) {
