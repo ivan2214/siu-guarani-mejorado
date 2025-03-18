@@ -4,13 +4,6 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
-} from "@/components/ui/select";
-import {
   Dialog,
   DialogContent,
   DialogDescription,
@@ -20,30 +13,47 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { UserPlus } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
+import { Check, Eye, EyeOff, UserPlus } from "lucide-react";
+import { Role } from "@prisma/client";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export const DialogAddUser = () => {
+  const [selectedRol, setSelectedRol] = useState<Role>(Role.ESTUDIANTE);
   const [isOpen, setIsOpen] = useState(false);
-  const [formData, setFormData] = useState({
+  const initialFormData = {
     name: "",
     email: "",
     dni: "",
+    phone: "",
+    address: "",
     password: "",
     confirmPassword: "",
     role: "ESTUDIANTE",
-  });
+    accountStatus: true,
+  };
+  const [formData, setFormData] = useState(initialFormData);
+
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] =
+    useState(false);
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleRoleChange = (value) => {
-    setFormData({ ...formData, role: value });
+    const { id, value } = e.target;
+    setFormData({ ...formData, [id]: value });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Usuario creado:", formData);
+    console.log("Nuevo usuario:", formData);
     setIsOpen(false);
   };
 
@@ -59,88 +69,169 @@ export const DialogAddUser = () => {
         <DialogHeader>
           <DialogTitle>Agregar Usuario</DialogTitle>
           <DialogDescription>
-            Completa los campos para registrar un nuevo usuario en el sistema.
+            Completa los datos para registrar un nuevo usuario en el sistema
+            académico.
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="grid gap-4 py-4">
-          <div className="space-y-2">
-            <Label htmlFor="name">Nombre</Label>
-            <Input
-              id="name"
-              name="name"
-              placeholder="Ej: Juan Pérez"
-              value={formData.name}
-              onChange={handleChange}
-              required
-            />
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="name">Nombre</Label>
+              <Input
+                id="name"
+                placeholder="Ej: Juan Pérez"
+                value={formData.name}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="email">Correo Electrónico</Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="Ej: juan@example.com"
+                value={formData.email}
+                onChange={handleChange}
+                required
+              />
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="dni">DNI</Label>
+              <Input
+                id="dni"
+                placeholder="Ej: 12345678"
+                value={formData.dni}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="phone">Teléfono</Label>
+              <Input
+                id="phone"
+                placeholder="Ej: +54 381 1234567"
+                value={formData.phone}
+                onChange={handleChange}
+                required
+              />
+            </div>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="email">Correo Electrónico</Label>
+            <Label htmlFor="address">Dirección</Label>
             <Input
-              id="email"
-              name="email"
-              type="email"
-              placeholder="Ej: juan@example.com"
-              value={formData.email}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="dni">DNI</Label>
-            <Input
-              id="dni"
-              name="dni"
-              placeholder="Ej: 12345678"
-              value={formData.dni}
+              id="address"
+              placeholder="Ej: Av. Siempre Viva 742"
+              value={formData.address}
               onChange={handleChange}
               required
             />
           </div>
           <div className="space-y-2">
             <Label htmlFor="password">Contraseña</Label>
-            <Input
-              id="password"
-              name="password"
-              type="password"
-              placeholder="••••••••"
-              value={formData.password}
-              onChange={handleChange}
-              required
-            />
+            <div className="relative flex items-center">
+              <Input
+                id="password"
+                type={isPasswordVisible ? "text" : "password"}
+                placeholder="********"
+                value={formData.password}
+                onChange={handleChange}
+                required
+              />
+              {isPasswordVisible ? (
+                <EyeOff
+                  className="absolute top-3 right-3 h-4 w-4 cursor-pointer"
+                  onClick={() => setIsPasswordVisible(!isPasswordVisible)}
+                />
+              ) : (
+                <Eye
+                  className="top- absolute right-3 h-4 w-4 cursor-pointer"
+                  onClick={() => setIsPasswordVisible(!isPasswordVisible)}
+                />
+              )}
+            </div>
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="confirm-password">Confirmar Contraseña</Label>
-            <Input
-              id="confirm-password"
-              name="confirmPassword"
-              type="password"
-              placeholder="••••••••"
-              value={formData.password}
-              onChange={handleChange}
-              required
-            />
+            <div className="relative flex items-center">
+              <Input
+                id="confirmPassword"
+                type={isConfirmPasswordVisible ? "text" : "password"}
+                placeholder="********"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                required
+              />
+              {isConfirmPasswordVisible ? (
+                <EyeOff
+                  className="absolute top-3 right-3 h-4 w-4 cursor-pointer"
+                  onClick={() =>
+                    setIsConfirmPasswordVisible(!isConfirmPasswordVisible)
+                  }
+                />
+              ) : (
+                <Eye
+                  className="absolute top-3 right-3 h-4 w-4 cursor-pointer"
+                  onClick={() =>
+                    setIsConfirmPasswordVisible(!isConfirmPasswordVisible)
+                  }
+                />
+              )}
+            </div>
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="role">Rol</Label>
-            <Select value={formData.role} onValueChange={handleRoleChange}>
-              <SelectTrigger id="role">
-                <SelectValue placeholder="Seleccionar rol" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="ESTUDIANTE">Estudiante</SelectItem>
-                <SelectItem value="PROFESOR">Profesor</SelectItem>
-                <SelectItem value="ADMIN">Administrador</SelectItem>
-              </SelectContent>
-            </Select>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="role">Rol</Label>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline">Elegir rol</Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent
+                  className="w-[--radix-dropdown-menu-trigger-width]"
+                  align="start"
+                >
+                  <DropdownMenuLabel>Rol</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuRadioGroup
+                    value={selectedRol}
+                    onValueChange={(e) => setSelectedRol(e as Role)}
+                  >
+                    {[Role.ESTUDIANTE, Role.ADMIN, Role.PROFESOR].map((rol) => (
+                      <DropdownMenuRadioItem key={rol} value={rol}>
+                        {rol}{" "}
+                        {rol === selectedRol && <Check className="ml-auto" />}
+                      </DropdownMenuRadioItem>
+                    ))}
+                  </DropdownMenuRadioGroup>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+          </div>
+          <div className="flex items-center justify-between">
+            <Label htmlFor="accountStatus">Estado de cuenta</Label>
+            <div className="flex items-center gap-2">
+              <Switch
+                id="accountStatus"
+                checked={formData.accountStatus}
+                onCheckedChange={(checked) =>
+                  setFormData({ ...formData, accountStatus: checked })
+                }
+              />
+            </div>
           </div>
           <DialogFooter>
             <Button
-              type="button"
               variant="outline"
-              onClick={() => setIsOpen(false)}
+              type="reset"
+              onClick={() => {
+                setIsOpen(false);
+                //resetForm();
+                setFormData(initialFormData);
+              }}
             >
               Cancelar
             </Button>
