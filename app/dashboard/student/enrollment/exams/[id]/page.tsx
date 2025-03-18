@@ -162,7 +162,7 @@ export default function ExamDetailPage() {
 				<p className="mb-6 text-muted-foreground">
 					El examen que estás buscando no existe o ha sido eliminado.
 				</p>
-				<Button onClick={() => router.push("/enrollment/exams")}>
+				<Button onClick={() => router.back()}>
 					<ArrowLeft className="mr-2 h-4 w-4" />
 					Volver a la lista de exámenes
 				</Button>
@@ -191,7 +191,7 @@ export default function ExamDetailPage() {
 				<Button
 					variant="ghost"
 					size="sm"
-					onClick={() => router.push("/enrollment/exams")}
+					onClick={() => router.back()}
 				>
 					<ArrowLeft className="mr-2 h-4 w-4" />
 					Volver

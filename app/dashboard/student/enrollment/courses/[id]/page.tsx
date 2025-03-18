@@ -221,7 +221,7 @@ export default function CourseDetailPage() {
         <p className="mb-6 text-muted-foreground">
           La materia que estás buscando no existe o ha sido eliminada.
         </p>
-        <Button onClick={() => router.push("/enrollment/courses")}>
+        <Button onClick={() => router.back()}>
           <ArrowLeft className="mr-2 h-4 w-4" />
           Volver a la lista de materias
         </Button>
@@ -237,11 +237,7 @@ export default function CourseDetailPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-2">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => router.push("/enrollment/courses")}
-        >
+        <Button variant="ghost" size="sm" onClick={() => router.back()}>
           <ArrowLeft className="mr-2 h-4 w-4" />
           Volver
         </Button>

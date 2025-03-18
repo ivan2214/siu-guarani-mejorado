@@ -36,7 +36,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
   // Define menu items based on user role
   // This would typically come from an auth context
-  const userRole: "student" | "teacher" | "admin" = "student"; // Could be "student", "teacher", or "admin"
+  const userRole: "student" | "teacher" | "admin" = "admin"; // Could be "student", "teacher", or "admin"
 
   const studentMenuItems: NavMainItem[] = [
     {
