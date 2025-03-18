@@ -3,7 +3,7 @@ import { DashboardTabs } from "./components/dashboard-tabs";
 import { prisma } from "@/lib/prisma";
 
 export default async function DashboardPage() {
-  const userId = 20;
+  const userId = "1";
   const today = new Date();
 
   const user = await prisma.user.findUnique({
@@ -70,9 +70,6 @@ export default async function DashboardPage() {
   if (!user) {
     return null;
   }
-
-  const totalSubjects = await prisma.subject.count();
-  const approvedSubjects = user._count.academicRecords;
   const careerProgress = totalSubjects
     ? (approvedSubjects / totalSubjects) * 100
     : 0;
@@ -105,6 +102,8 @@ export default async function DashboardPage() {
     counts: user._count,
     notifications: user.notifications,
   };
+  const totalSubjects = await prisma.subject.count();
+  const approvedSubjects = user._count.academicRecords;
 
   return (
     <div className="space-y-6">

@@ -30,9 +30,10 @@ model User {
   professor   Professor? @relation(fields: [professorId], references: [id])
   professorId String?    @unique
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  replies   Reply[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  replies       Reply[]
+  notifications Notification[]
 }
 
 enum Role {
@@ -42,14 +43,70 @@ enum Role {
 }
 
 model Student {
-  id String @id @default(uuid())
+  id                String             @id @default(uuid()) // Identificador único del estudiante
+  status            String // Estado actual del estudiante (activo, inactivo, egresado, etc.)
+  enrollments       Enrollment[] // Lista de inscripciones a cursos
+  examRegistrations ExamRegistration[] // Registros de exámenes presentados
+  academicRecords   AcademicRecord[] // Historial académico del estudiante
+  user              User? // Relación opcional con un usuario del sistema
+  studentCourses    StudentCourse[] // Relación con cursos matriculados por el estudiante
+}
 
-  legajo     String          @unique
-  status     String
-  attendance Int
-  courses    StudentCourse[]
+model AcademicRecord {
+  id               String  @id @default(uuid()) // Identificador único del historial académico
+  student          Student @relation(fields: [studentId], references: [id]) // Relación con el estudiante
+  studentId        String // ID del estudiante al que pertenece este registro
+  averageGrade     Float? // Promedio general de calificaciones
+  progressPercent  Float? // Porcentaje de avance en la carrera
+  gpa              Float? // Promedio ponderado acumulado
+  completedCourses Int? // Total de cursos aprobados por el estudiante
 
-  user User?
+  @@index([studentId])
+}
+
+model Enrollment {
+  id        String  @id @default(uuid()) // Identificador único de la inscripción
+  student   Student @relation(fields: [studentId], references: [id]) // Relación con el estudiante
+  studentId String // ID del estudiante inscrito en el curso
+  course    Course  @relation(fields: [courseId], references: [id]) // Relación con el curso
+  courseId  String // ID del curso en el que está inscrito
+  year      Int // Año en el que se realizó la inscripción
+  semester  Int // Semestre en el que se realizó la inscripción
+
+  @@index([courseId])
+  @@index([studentId])
+}
+
+model Exam {
+  id                String             @id @default(uuid()) // Identificador único del examen
+  course            Course             @relation(fields: [courseId], references: [id]) // Relación con el curso
+  courseId          String // ID del curso al que pertenece el examen
+  examRegistrations ExamRegistration[] // Lista de registros de estudiantes inscritos en este examen
+
+  @@index([courseId])
+}
+
+model ExamRegistration {
+  id         String  @id @default(uuid()) // Identificador único del registro de examen
+  student    Student @relation(fields: [studentId], references: [id]) // Relación con el estudiante
+  studentId  String // ID del estudiante que presentó el examen
+  exam       Exam    @relation(fields: [examId], references: [id]) // Relación con el examen
+  examId     String // ID del examen presentado
+  finalGrade Float? // Nota final obtenida en el examen (opcional si aún no ha sido calificado)
+
+  @@index([studentId])
+  @@index([examId])
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  title     String
+  message   String
+  createdAt DateTime @default(now())
+
+  @@index([userId])
 }
 
 model Professor {
@@ -84,6 +141,9 @@ model Course {
   bibliography Json // Lista de libros y autores
   students     StudentCourse[]
   evaluations  Evaluation[]
+
+  enrollments Enrollment[] // Lista de inscripciones a este curso
+  exams       Exam[] // Lista de exámenes asociados al curso
 
   @@index([careerId])
   @@index([departmentId])
