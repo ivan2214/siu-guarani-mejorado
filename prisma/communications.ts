@@ -8,26 +8,20 @@ export const getCommunications = async (
   return await prisma.communication.findMany({
     where: filter,
     include: {
-      replies: {
-        include: {
-          user: true,
-        },
-      },
+      audience: true,
+      sender: true,
     },
   });
 };
 
 export const getCommunicationById = async (
-  id: string
+  id: number
 ): Promise<Communication | null> => {
   return await prisma.communication.findUnique({
     where: { id },
     include: {
-      replies: {
-        include: {
-          user: true,
-        },
-      },
+      audience: true,
+      sender: true,
     },
   });
 };
@@ -41,7 +35,7 @@ export const createCommunication = async (
 };
 
 export const updateCommunication = async (
-  id: string,
+  id: number,
   data: Prisma.CommunicationUpdateInput
 ): Promise<Communication | null> => {
   return await prisma.communication.update({
@@ -51,7 +45,7 @@ export const updateCommunication = async (
 };
 
 export const deleteCommunication = async (
-  id: string
+  id: number
 ): Promise<Communication | null> => {
   return await prisma.communication.delete({
     where: { id },

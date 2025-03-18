@@ -10,7 +10,12 @@ export const getCareers = async (
   return await prisma.career.findMany({
     where: filter,
     include: {
-      curriculums: true,
+      subjects: {
+        include: {
+          correlativeSubjects: true,
+          schedules: true,
+        },
+      },
     },
   });
 };
@@ -20,7 +25,12 @@ export const getCareerById = async (id: string): Promise<Career | null> => {
   return await prisma.career.findUnique({
     where: { id },
     include: {
-      curriculums: true,
+      subjects: {
+        include: {
+          correlativeSubjects: true,
+          schedules: true,
+        },
+      },
     },
   });
 };
@@ -33,7 +43,12 @@ export const createCareer = async (
   return await prisma.career.create({
     data,
     include: {
-      curriculums: true,
+      subjects: {
+        include: {
+          correlativeSubjects: true,
+          schedules: true,
+        },
+      },
     },
   });
 };
@@ -47,7 +62,12 @@ export const updateCareer = async (
     where: { id },
     data,
     include: {
-      curriculums: true,
+      subjects: {
+        include: {
+          correlativeSubjects: true,
+          schedules: true,
+        },
+      },
     },
   });
 };
@@ -57,7 +77,12 @@ export const deleteCareer = async (id: string): Promise<Career | null> => {
   return await prisma.career.delete({
     where: { id },
     include: {
-      curriculums: true,
+      subjects: {
+        include: {
+          correlativeSubjects: true,
+          schedules: true,
+        },
+      },
     },
   });
 };
