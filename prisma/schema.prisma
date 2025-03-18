@@ -155,8 +155,8 @@ model ExamSession {
 model ExamRegistration {
   id               Int      @id @default(autoincrement())
   studentId        Int
-  examSessionId    Int
-  registrationDate DateTime @default(now())
+  examSessionId    Int // ID de la mesa de exámenes
+  registrationDate DateTime @default(now()) // Fecha de inscripción
 
   student     User        @relation(fields: [studentId], references: [id])
   examSession ExamSession @relation(fields: [examSessionId], references: [id])

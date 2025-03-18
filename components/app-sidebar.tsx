@@ -42,7 +42,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     {
       icon: LayoutDashboard,
       title: "Dashboard",
-      url: "/dashboard?role=student",
+      url: "/dashboard",
     },
     {
       icon: BookOpen,
@@ -80,7 +80,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     {
       icon: LayoutDashboard,
       title: "Dashboard",
-      url: "/dashboard?role=teacher",
+      url: "/dashboard",
     },
     { icon: Users, title: "Mis Cursos", url: "/dashboard/teacher/my-courses" },
     {
@@ -106,7 +106,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   ];
 
   const adminMenuItems: NavMainItem[] = [
-    { icon: LayoutDashboard, title: "Dashboard", url: "/dashboard?role=admin" },
+    { icon: LayoutDashboard, title: "Dashboard", url: "/dashboard" },
     {
       icon: GraduationCap,
       title: "Gestión de Carreras",
