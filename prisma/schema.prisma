@@ -82,14 +82,14 @@ model SubjectRegistration {
 
 model ExamRegistration {
   id           String   @id @default(uuid())
-  student      Student  @relation(fields: [studentId], references: [id]) // Estudiante al que pertenece la inscripción
+  student      Student  @relation(fields: [studentId], references: [id])
   studentId    String
-  exam         Exam     @relation(fields: [examId], references: [id]) // Examen a la que se inscribió el estudiante
+  exam         Exam     @relation(fields: [examId], references: [id])
   examId       String
   year         Int // Año de la inscripción
   semester     Int // Cuatrimestre de la inscripción
-  grade        Float? // Calificación de la inscripción
-  registeredAt DateTime @default(now()) // Fecha y hora de la inscripción a la materia
+  grade        Float?
+  registeredAt DateTime @default(now())
 
   @@index([examId])
   @@index([studentId])
@@ -97,37 +97,37 @@ model ExamRegistration {
 
 model Professor {
   id    String @id @default(uuid())
-  name  String // Nombre del profesor
-  email String @unique // Correo del profesor 
+  name  String
+  email String @unique
 
   user   User?   @relation(fields: [userId], references: [id])
   userId String? @unique
 
-  departments Department[] // Departamentos a los que pertenece el profesor
-  subjects    Subject[] // Materias dictadas por el profesor
+  departments Department[]
+  subjects    Subject[]
 }
 
 model Subject {
   id   String @id @default(uuid())
   code String @unique
 
-  name        String // Nombre de la materia
-  year        Int // Año de la materia
-  semester    Int // Cuatrimestre de la materia
-  description String? // Descripción de la materia
-  capacity    Int // Capacidad de la materia
+  name        String
+  year        Int
+  semester    Int
+  description String?
+  capacity    Int
 
-  progressPercentage Float // porcentaje de cuanto falta para terminar la materia
+  progressPercentage Float // Porcentaje de avance en la materia
 
-  career       Career     @relation(fields: [careerId], references: [id]) // La carrera a la que pertenece la materia
+  career       Career     @relation(fields: [careerId], references: [id])
   careerId     String
-  department   Department @relation(fields: [departmentId], references: [id]) // El departamento al que pertenece la materia (cátedra)
+  department   Department @relation(fields: [departmentId], references: [id])
   departmentId String
 
-  professors          Professor[] // Profesores que dictan la materia
-  students            SubjectRegistration[] // Estudiantes matriculados en la materia
-  exams               Exam[] // Exámenes de la materia
-  correlativeSubjects CorrelativeSubject[] // Materias correlativas
+  professors          Professor[]
+  students            SubjectRegistration[]
+  exams               Exam[]
+  correlativeSubjects CorrelativeSubject[]
 
   @@index([careerId])
   @@index([departmentId])
@@ -149,8 +149,9 @@ model Exam {
   location  String // Lugar donde se rendirá el examen
   subject   Subject  @relation(fields: [subjectId], references: [id])
   subjectId String
-  examType  ExamType // Tipo de examen (parcial, final, etc.)
-  duration  Int? // Duración en minutos
+  examType  ExamType
+  duration  Int?
+  capacity  Int
 
   studentsEnrolled ExamRegistration[]
 

@@ -7,9 +7,9 @@ export type UserWithRelations = Prisma.UserGetPayload<{
     messages: true;
     student: {
       include: {
-        enrollments: {
+        subjectRecords: {
           include: {
-            course: true;
+            subject: true;
           };
         };
         academicRecord: true;
@@ -18,7 +18,7 @@ export type UserWithRelations = Prisma.UserGetPayload<{
     professor: {
       include: {
         departments: true;
-        courses: true;
+        subjects: true;
       };
     };
     replies: true;
@@ -30,9 +30,9 @@ export type UserWithRelations = Prisma.UserGetPayload<{
 export type StudentWithRelations = Prisma.StudentGetPayload<{
   include: {
     user: true;
-    enrollments: {
+    subjectRecords: {
       include: {
-        course: true;
+        subject: true;
       };
     };
     academicRecord: true;
@@ -44,12 +44,12 @@ export type ProfessorWithRelations = Prisma.ProfessorGetPayload<{
   include: {
     user: true;
     departments: true;
-    courses: true;
+    subjects: true;
   };
 }>;
 
-// Tipo para incluir todas las relaciones en Course
-export type CourseWithRelations = Prisma.CourseGetPayload<{
+// Tipo para incluir todas las relaciones en Subject
+export type SubjectWithRelations = Prisma.SubjectGetPayload<{
   include: {
     career: true;
     department: true;
@@ -59,7 +59,7 @@ export type CourseWithRelations = Prisma.CourseGetPayload<{
         student: true;
       };
     };
-    evaluations: true;
+    exams: true;
   };
 }>;
 
@@ -77,17 +77,17 @@ export type ReplyWithRelations = Prisma.ReplyGetPayload<{
   };
 }>;
 
-// Tipo para incluir todas las relaciones en Evaluation
-export type EvaluationWithRelations = Prisma.EvaluationGetPayload<{
+// Tipo para incluir todas las relaciones en Exam
+export type ExamWithRelations = Prisma.ExamGetPayload<{
   include: {
-    course: true;
+    subject: true;
   };
 }>;
 
 // Tipo para incluir todas las relaciones en Career
 export type CareerWithRelations = Prisma.CareerGetPayload<{
   include: {
-    courses: true;
+    subjects: true;
   };
 }>;
 
@@ -95,7 +95,7 @@ export type CareerWithRelations = Prisma.CareerGetPayload<{
 export type DepartmentWithRelations = Prisma.DepartmentGetPayload<{
   include: {
     professors: true;
-    courses: true;
+    subjects: true;
   };
 }>;
 

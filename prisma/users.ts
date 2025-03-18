@@ -1,3 +1,4 @@
+"use server";
 import { type Prisma, PrismaClient } from "@prisma/client";
 import type { UserWithRelations } from "@/types";
 
@@ -14,9 +15,9 @@ export const getUsers = async (
       messages: true,
       student: {
         include: {
-          enrollments: {
+          subjectRecords: {
             include: {
-              course: true,
+              subject: true,
             },
           },
           academicRecord: true,
@@ -25,7 +26,7 @@ export const getUsers = async (
       professor: {
         include: {
           departments: true,
-          courses: true,
+          subjects: true,
         },
       },
       replies: true,
@@ -44,9 +45,9 @@ export const getUserById = async (
       messages: true,
       student: {
         include: {
-          enrollments: {
+          subjectRecords: {
             include: {
-              course: true,
+              subject: true,
             },
           },
           academicRecord: true,
@@ -55,7 +56,7 @@ export const getUserById = async (
       professor: {
         include: {
           departments: true,
-          courses: true,
+          subjects: true,
         },
       },
       replies: true,
@@ -74,9 +75,9 @@ export const createUser = async (
       messages: true,
       student: {
         include: {
-          enrollments: {
+          subjectRecords: {
             include: {
-              course: true,
+              subject: true,
             },
           },
           academicRecord: true,
@@ -85,7 +86,7 @@ export const createUser = async (
       professor: {
         include: {
           departments: true,
-          courses: true,
+          subjects: true,
         },
       },
       replies: true,
@@ -106,9 +107,9 @@ export const updateUser = async (
       messages: true,
       student: {
         include: {
-          enrollments: {
+          subjectRecords: {
             include: {
-              course: true,
+              subject: true,
             },
           },
           academicRecord: true,
@@ -117,7 +118,7 @@ export const updateUser = async (
       professor: {
         include: {
           departments: true,
-          courses: true,
+          subjects: true,
         },
       },
       replies: true,
@@ -136,9 +137,9 @@ export const deleteUser = async (
       messages: true,
       student: {
         include: {
-          enrollments: {
+          subjectRecords: {
             include: {
-              course: true,
+              subject: true,
             },
           },
           academicRecord: true,
@@ -147,7 +148,7 @@ export const deleteUser = async (
       professor: {
         include: {
           departments: true,
-          courses: true,
+          subjects: true,
         },
       },
       replies: true,
