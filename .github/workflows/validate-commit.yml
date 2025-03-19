@@ -1,0 +1,54 @@
+name: Validar Mensajes de Commit y Calidad del Código
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+      - develop
+  workflow_dispatch:
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Verificar el código
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0 # Importante para que commitlint pueda ver todo el historial
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "22.13.1"
+
+      - name: Instalar Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest # Puedes fijar una versión si prefieres
+
+      - name: Instalar dependencias
+        run: bun install
+
+      - name: Ejecutar Biome
+        run: bun run check
+
+      - name: Ejecutar Commitlint en Push
+        if: github.event_name == 'push'
+        run: bunx commitlint --last --verbose
+
+      - name: Ejecutar Commitlint en PR
+        if: github.event_name == 'pull_request'
+        run: bunx commitlint --from=${{ github.event.pull_request.base.sha }} --to=${{ github.event.pull_request.head.sha }} --verbose
+
+      - name: Verificar errores de linting
+        run: |
+          if git diff --quiet HEAD^ HEAD; then
+            echo "No se detectaron cambios en el código, omitiendo linting";
+          else
+            bun check:fix;
+          fi
