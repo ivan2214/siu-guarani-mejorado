@@ -141,9 +141,10 @@ model Professor {
   user   User?   @relation(fields: [userId], references: [id])
   userId String? @unique
 
-  departments Department[]
-  subjects    Subject[]
-  schedules   Schedule[]
+  departments    Department[]
+  subjects       Subject[]
+  schedules      Schedule[]
+  directorCareer Career[]
 }
 
 model Subject {
@@ -210,14 +211,20 @@ enum ExamType {
 }
 
 model Career {
-  id   String @id @default(uuid())
-  name String
-  code String @unique
+  id          String  @id @default(uuid())
+  name        String
+  code        String  @unique
+  duration    Int
+  description String?
 
-  students Student[]
+  director   Professor? @relation(fields: [directorId], references: [id])
+  directorId String?
 
+  students               Student[]
   subjects               Subject[]
   audiencesCommunication AudienceCommunication[]
+
+  @@index([directorId])
 }
 
 model Department {

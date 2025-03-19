@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import {
   ArrowUpDown,
   ChevronRight,
@@ -8,12 +7,15 @@ import {
   Edit,
   Filter,
   GraduationCap,
+  Menu,
   Plus,
   Search,
   Trash2,
 } from "lucide-react";
+import { useState } from "react";
 import { toast } from "sonner";
 
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -22,23 +24,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import {
   Dialog,
   DialogContent,
@@ -56,6 +41,15 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   Sheet,
   SheetClose,
@@ -66,10 +60,18 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Textarea } from "@/components/ui/textarea";
 import Link from "next/link";
+import type { Career, Prisma } from "@prisma/client";
 
 // Sample careers data
 const careers = [
@@ -176,15 +178,11 @@ export default function ManageCareersPage() {
   const [sortOrder, setSortOrder] = useState("asc");
   const [isAddCareerOpen, setIsAddCareerOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const [selectedCareer, setSelectedCareer] = useState<any>(null);
-  const [newCareer, setNewCareer] = useState({
+  const [selectedCareer, setSelectedCareer] = useState<>(null);
+  const [newCareer, setNewCareer] = useState<Prisma.CareerCreateArgs["data"]>({
     name: "",
     code: "",
-    department: "",
-    director: "",
     duration: 5,
-    credits: 240,
-    status: "active",
     description: "",
   });
 
@@ -209,9 +207,8 @@ export default function ManageCareersPage() {
   const sortedCareers = [...filteredCareers].sort((a, b) => {
     if (sortOrder === "asc") {
       return a[sortBy as keyof typeof a] > b[sortBy as keyof typeof b] ? 1 : -1;
-    } else {
-      return a[sortBy as keyof typeof a] < b[sortBy as keyof typeof b] ? 1 : -1;
     }
+    return a[sortBy as keyof typeof a] < b[sortBy as keyof typeof b] ? 1 : -1;
   });
 
   const resetFilters = () => {
@@ -237,25 +234,18 @@ export default function ManageCareersPage() {
     setNewCareer({
       name: "",
       code: "",
-      department: "",
-      director: "",
       duration: 5,
-      credits: 240,
-      status: "active",
       description: "",
     });
   };
 
-  const handleEditCareer = (career: any) => {
+  const handleEditCareer = (career: Prisma.CareerUpdateArgs["data"]) => {
     setSelectedCareer(career);
     setNewCareer({
       name: career.name,
       code: career.code,
-      department: career.department,
       director: career.director,
       duration: career.duration,
-      credits: career.credits,
-      status: career.status,
       description: career.description,
     });
     setIsAddCareerOpen(true);
@@ -567,25 +557,25 @@ export default function ManageCareersPage() {
               <TableRow>
                 <TableHead className="w-[50px]">#</TableHead>
                 <TableHead>
-                  <div
+                  <Button
                     className="flex cursor-pointer items-center gap-1"
                     onClick={() => handleSort("name")}
                   >
                     Nombre
                     {sortBy === "name" && <ArrowUpDown className="h-4 w-4" />}
-                  </div>
+                  </Button>
                 </TableHead>
                 <TableHead>
-                  <div
+                  <Button
                     className="flex cursor-pointer items-center gap-1"
                     onClick={() => handleSort("code")}
                   >
                     Código
                     {sortBy === "code" && <ArrowUpDown className="h-4 w-4" />}
-                  </div>
+                  </Button>
                 </TableHead>
                 <TableHead>
-                  <div
+                  <Button
                     className="flex cursor-pointer items-center gap-1"
                     onClick={() => handleSort("department")}
                   >
@@ -593,10 +583,10 @@ export default function ManageCareersPage() {
                     {sortBy === "department" && (
                       <ArrowUpDown className="h-4 w-4" />
                     )}
-                  </div>
+                  </Button>
                 </TableHead>
                 <TableHead>
-                  <div
+                  <Button
                     className="flex cursor-pointer items-center gap-1"
                     onClick={() => handleSort("duration")}
                   >
@@ -604,10 +594,10 @@ export default function ManageCareersPage() {
                     {sortBy === "duration" && (
                       <ArrowUpDown className="h-4 w-4" />
                     )}
-                  </div>
+                  </Button>
                 </TableHead>
                 <TableHead>
-                  <div
+                  <Button
                     className="flex cursor-pointer items-center gap-1"
                     onClick={() => handleSort("students")}
                   >
@@ -615,7 +605,7 @@ export default function ManageCareersPage() {
                     {sortBy === "students" && (
                       <ArrowUpDown className="h-4 w-4" />
                     )}
-                  </div>
+                  </Button>
                 </TableHead>
                 <TableHead>Estado</TableHead>
                 <TableHead className="text-right">Acciones</TableHead>
@@ -644,20 +634,7 @@ export default function ManageCareersPage() {
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                           <Button variant="ghost" size="icon">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                              strokeWidth="2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              className="h-4 w-4"
-                            >
-                              <circle cx="12" cy="12" r="1" />
-                              <circle cx="19" cy="12" r="1" />
-                              <circle cx="5" cy="12" r="1" />
-                            </svg>
+                            <Menu className="h-4 w-4" />
                             <span className="sr-only">Abrir menú</span>
                           </Button>
                         </DropdownMenuTrigger>

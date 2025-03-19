@@ -188,11 +188,7 @@ export default function ExamDetailPage() {
 	return (
 		<div className="space-y-6">
 			<div className="flex items-center gap-2">
-				<Button
-					variant="ghost"
-					size="sm"
-					onClick={() => router.back()}
-				>
+				<Button variant="ghost" size="sm" onClick={() => router.back()}>
 					<ArrowLeft className="mr-2 h-4 w-4" />
 					Volver
 				</Button>
