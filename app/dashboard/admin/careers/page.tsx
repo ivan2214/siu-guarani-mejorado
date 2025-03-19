@@ -70,8 +70,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Textarea } from "@/components/ui/textarea";
+import type { Prisma } from "@prisma/client";
 import Link from "next/link";
-import type { Career, Prisma } from "@prisma/client";
 
 // Sample careers data
 const careers = [
