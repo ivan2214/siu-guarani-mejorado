@@ -1,32 +1,15 @@
 import { Badge } from "@/components/ui/badge";
-import {
-  DashboardTabs,
-  type DashboardTabsProps,
-} from "./components/dashboard-tabs";
+import { DashboardTabs } from "./components/dashboard-tabs";
 import { getUserById } from "@/prisma/users";
 
 export default async function DashboardPage() {
-  const userId = "1";
-  const today = new Date();
+  const userId = "83e6d60c-d2e3-4a57-97f5-6288055fd49d";
 
   const user = await getUserById(userId);
 
-  if (!user || !user.student) {
+  if (!user) {
     return null;
   }
-
-  const userData: DashboardTabsProps = {
-    userData: {
-      enrollments: user.student.enrollments.map((enrollment) => ({
-        name: enrollment.course.name,
-        code: enrollment.course.code,
-        description: enrollment.course.description,
-        capacity: enrollment.course.capacity,
-      })),
-      careerProgress: user.student.academicRecord?.progressPercentCarrer || 0,
-      generalAverage: user.student.academicRecord?.averageGrade || 0,
-    },
-  };
 
   return (
     <div className="space-y-6">
@@ -39,7 +22,7 @@ export default async function DashboardPage() {
         <Badge>Role: {user.role}</Badge>
       </div>
 
-      <DashboardTabs userData={userData} />
+      <DashboardTabs userData={user} />
     </div>
   );
 }

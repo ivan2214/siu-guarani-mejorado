@@ -46,7 +46,6 @@ export const DashboardTabs: React.FC<DashboardTabsProps> = ({ userData }) => {
     >
       <TabsList>
         <TabsTrigger value="overview">Resumen</TabsTrigger>
-
         <TabsTrigger value="notifications">Notificaciones</TabsTrigger>
       </TabsList>
 
@@ -61,7 +60,7 @@ export const DashboardTabs: React.FC<DashboardTabsProps> = ({ userData }) => {
             </CardHeader>
             <CardContent>
               <div className="font-bold text-2xl">
-                {student?.enrollments.length}
+                {student?.subjectRecords.length}
               </div>
               <p className="text-muted-foreground text-xs">Semestre actual</p>
             </CardContent>
@@ -76,7 +75,7 @@ export const DashboardTabs: React.FC<DashboardTabsProps> = ({ userData }) => {
             </CardHeader>
             <CardContent>
               <div className="font-bold text-2xl">
-                {student?.enrollments.map}
+                {student?.examRecords.length}
               </div>
               <p className="text-muted-foreground text-xs">Próximos 30 días</p>
             </CardContent>
@@ -91,7 +90,7 @@ export const DashboardTabs: React.FC<DashboardTabsProps> = ({ userData }) => {
             </CardHeader>
             <CardContent>
               <div className="font-bold text-2xl">
-                {student?.generalAverage}
+                {student?.academicRecord?.averageGrade}
               </div>
               <p className="text-muted-foreground text-xs">Escala 1-10</p>
             </CardContent>
@@ -106,7 +105,7 @@ export const DashboardTabs: React.FC<DashboardTabsProps> = ({ userData }) => {
             </CardHeader>
             <CardContent>
               <div className="font-bold text-2xl">
-                {student?.careerProgress}%
+                {student?.academicRecord?.progressPercentCarrer}%
               </div>
               <Progress value={65} className="mt-2 h-2" />
             </CardContent>
@@ -123,16 +122,19 @@ export const DashboardTabs: React.FC<DashboardTabsProps> = ({ userData }) => {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {student?.enrollments.map((subject) => (
-                  <div key={subject.name} className="flex items-center">
+                {student?.subjectRecords.map((record) => (
+                  <div key={record.id} className="flex items-center">
                     <div className="mr-4 w-full">
                       <div className="mb-1 flex items-center justify-between">
                         <span className="font-medium text-sm">
-                          {subject.name}
+                          {record.subject.name}
                         </span>
-                        <Badge variant="outline">{subject.code}</Badge>
+                        <Badge variant="outline">{record.subject.code}</Badge>
                       </div>
-                      <Progress value={subject.capacity} className="h-2" />
+                      <Progress
+                        value={record.subject.capacity}
+                        className="h-2"
+                      />
                     </div>
                   </div>
                 ))}
@@ -149,26 +151,26 @@ export const DashboardTabs: React.FC<DashboardTabsProps> = ({ userData }) => {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {student?.examRegistrations.map((exam) => {
+                {student?.examRecords.map((exam) => {
                   const formattedDate = new Intl.DateTimeFormat("es-AR", {
                     day: "2-digit",
                     month: "2-digit",
                     year: "numeric",
-                  }).format(new Date(exam.date));
+                  }).format(new Date(exam.registeredAt));
 
                   const formattedTime = new Intl.DateTimeFormat("es-AR", {
                     hour: "2-digit",
                     minute: "2-digit",
-                  }).format(new Date(exam.date));
+                  }).format(new Date(exam.registeredAt));
 
                   return (
-                    <div key={exam.name} className="flex items-center">
+                    <div key={exam.id} className="flex items-center">
                       <div className="mr-4 flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
                         <FileText className="h-5 w-5 text-primary" />
                       </div>
                       <div className="space-y-1">
                         <p className="font-medium text-sm leading-none">
-                          {exam.name}
+                          {exam.exam.name}
                         </p>
                         <div className="flex items-center text-muted-foreground text-xs">
                           <Calendar className="mr-1 h-3 w-3" />
@@ -196,7 +198,7 @@ export const DashboardTabs: React.FC<DashboardTabsProps> = ({ userData }) => {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {student?.notifications.map((notification) => (
+              {userData?.notifications.map((notification) => (
                 <div
                   key={notification.createdAt.toString()}
                   className="flex items-start space-x-4 rounded-md border p-4"

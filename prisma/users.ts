@@ -63,7 +63,20 @@ export const getUserById = async (
             },
             academicRecord: true,
             career: true,
-            examRecords: true,
+            examRecords: {
+              include: {
+                exam: {
+                  include: {
+                    subject: true,
+                  },
+                },
+                student: {
+                  include: {
+                    user: true,
+                  },
+                },
+              },
+            },
             schedule: true,
           },
         },

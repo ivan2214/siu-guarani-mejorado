@@ -12,22 +12,54 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { Check, Eye, EyeOff, UserPlus } from "lucide-react";
-import { Role } from "@prisma/client";
+import { Eye, EyeOff, UserPlus } from "lucide-react";
+import { AccountStatus, Role } from "@prisma/client";
+import {} from "@/components/ui/dropdown-menu";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Badge } from "@/components/ui/badge";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
+const AddUserFormSchema = z.object({
+  name: z.string().min(1),
+  email: z.string().email(),
+  dni: z.string().min(1),
+  phone: z.string().min(1),
+  address: z.string().min(1),
+  password: z.string().min(1),
+  confirmPassword: z.string().min(1),
+  role: z.enum([Role.ESTUDIANTE, Role.PROFESOR, Role.ADMIN]),
+  accountStatus: z.enum([
+    AccountStatus.ACTIVA,
+    AccountStatus.BANEADA,
+    AccountStatus.ELIMINADA,
+    AccountStatus.INACTIVA,
+    AccountStatus.SUSPENDIDA,
+  ]),
+});
 
 export const DialogAddUser = () => {
   const [selectedRol, setSelectedRol] = useState<Role>(Role.ESTUDIANTE);
+
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] =
+    useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const initialFormData = {
     name: "",
@@ -37,25 +69,20 @@ export const DialogAddUser = () => {
     address: "",
     password: "",
     confirmPassword: "",
-    role: "ESTUDIANTE",
-    accountStatus: true,
-  };
-  const [formData, setFormData] = useState(initialFormData);
-
-  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-  const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] =
-    useState(false);
-
-  const handleChange = (e) => {
-    const { id, value } = e.target;
-    setFormData({ ...formData, [id]: value });
+    role: Role.ESTUDIANTE,
+    accountStatus: AccountStatus.ACTIVA,
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("Nuevo usuario:", formData);
-    setIsOpen(false);
-  };
+  const form = useForm<z.infer<typeof AddUserFormSchema>>({
+    resolver: zodResolver(AddUserFormSchema),
+    defaultValues: initialFormData,
+  });
+
+  function onSubmit(values: z.infer<typeof AddUserFormSchema>) {
+    console.log(values);
+  }
+
+  console.log("Form Data", form.getValues());
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -73,171 +100,255 @@ export const DialogAddUser = () => {
             académico.
           </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="grid gap-4 py-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="name">Nombre</Label>
-              <Input
-                id="name"
-                placeholder="Ej: Juan Pérez"
-                value={formData.name}
-                onChange={handleChange}
-                required
-              />
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="grid gap-4 py-4"
+          >
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Nombre</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Ej: Juan Pérez" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <div className="space-y-2">
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Correo</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Ej: juan@example.com" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <FormField
+                  control={form.control}
+                  name="dni"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>DNI</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Ej: 45.678.901" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <div className="space-y-2">
+                <FormField
+                  control={form.control}
+                  name="phone"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Telefono</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="tel"
+                          placeholder="Ej: 987654321"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="email">Correo Electrónico</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="Ej: juan@example.com"
-                value={formData.email}
-                onChange={handleChange}
-                required
+              <FormField
+                control={form.control}
+                name="address"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Dirección</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Ej: Calle 123, Ciudad" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
             </div>
-          </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="dni">DNI</Label>
-              <Input
-                id="dni"
-                placeholder="Ej: 12345678"
-                value={formData.dni}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="phone">Teléfono</Label>
-              <Input
-                id="phone"
-                placeholder="Ej: +54 381 1234567"
-                value={formData.phone}
-                onChange={handleChange}
-                required
-              />
-            </div>
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="address">Dirección</Label>
-            <Input
-              id="address"
-              placeholder="Ej: Av. Siempre Viva 742"
-              value={formData.address}
-              onChange={handleChange}
-              required
+
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FormLabel>Contraseña</FormLabel>
+                  <FormControl>
+                    <div className="flex items-center gap-x-4">
+                      <Input
+                        id="password"
+                        type={isPasswordVisible ? "text" : "password"}
+                        placeholder="********"
+                        autoComplete="off"
+                        {...field}
+                      />
+                      {isPasswordVisible ? (
+                        <EyeOff
+                          className="h-6 w-6 cursor-pointer"
+                          onClick={() =>
+                            setIsPasswordVisible(!isPasswordVisible)
+                          }
+                        />
+                      ) : (
+                        <Eye
+                          className="h-6 w-6 cursor-pointer"
+                          onClick={() =>
+                            setIsPasswordVisible(!isPasswordVisible)
+                          }
+                        />
+                      )}
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="password">Contraseña</Label>
-            <div className="relative flex items-center">
-              <Input
-                id="password"
-                type={isPasswordVisible ? "text" : "password"}
-                placeholder="********"
-                value={formData.password}
-                onChange={handleChange}
-                required
-              />
-              {isPasswordVisible ? (
-                <EyeOff
-                  className="absolute top-3 right-3 h-4 w-4 cursor-pointer"
-                  onClick={() => setIsPasswordVisible(!isPasswordVisible)}
-                />
-              ) : (
-                <Eye
-                  className="top- absolute right-3 h-4 w-4 cursor-pointer"
-                  onClick={() => setIsPasswordVisible(!isPasswordVisible)}
-                />
-              )}
-            </div>
-          </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="confirm-password">Confirmar Contraseña</Label>
-            <div className="relative flex items-center">
-              <Input
-                id="confirmPassword"
-                type={isConfirmPasswordVisible ? "text" : "password"}
-                placeholder="********"
-                value={formData.confirmPassword}
-                onChange={handleChange}
-                required
-              />
-              {isConfirmPasswordVisible ? (
-                <EyeOff
-                  className="absolute top-3 right-3 h-4 w-4 cursor-pointer"
-                  onClick={() =>
-                    setIsConfirmPasswordVisible(!isConfirmPasswordVisible)
-                  }
-                />
-              ) : (
-                <Eye
-                  className="absolute top-3 right-3 h-4 w-4 cursor-pointer"
-                  onClick={() =>
-                    setIsConfirmPasswordVisible(!isConfirmPasswordVisible)
-                  }
-                />
+            <FormField
+              control={form.control}
+              name="confirmPassword"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FormLabel>Confirmar Contraseña</FormLabel>
+                  <FormControl>
+                    <div className="flex items-center gap-x-4">
+                      <Input
+                        id="confirmPassword"
+                        type={isConfirmPasswordVisible ? "text" : "password"}
+                        placeholder="********"
+                        autoComplete="off"
+                        {...field}
+                      />
+                      {isConfirmPasswordVisible ? (
+                        <EyeOff
+                          className="h-6 w-6 cursor-pointer"
+                          onClick={() =>
+                            setIsConfirmPasswordVisible(
+                              !isConfirmPasswordVisible
+                            )
+                          }
+                        />
+                      ) : (
+                        <Eye
+                          className="h-6 w-6 cursor-pointer"
+                          onClick={() =>
+                            setIsConfirmPasswordVisible(
+                              !isConfirmPasswordVisible
+                            )
+                          }
+                        />
+                      )}
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
               )}
-            </div>
-          </div>
+            />
 
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="role">Rol</Label>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline">Elegir rol</Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent
-                  className="w-[--radix-dropdown-menu-trigger-width]"
-                  align="start"
-                >
-                  <DropdownMenuLabel>Rol</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuRadioGroup
-                    value={selectedRol}
-                    onValueChange={(e) => setSelectedRol(e as Role)}
+            <FormField
+              control={form.control}
+              name="role"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Rol del usuario</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
                   >
-                    {[Role.ESTUDIANTE, Role.ADMIN, Role.PROFESOR].map((rol) => (
-                      <DropdownMenuRadioItem key={rol} value={rol}>
-                        {rol}{" "}
-                        {rol === selectedRol && <Check className="ml-auto" />}
-                      </DropdownMenuRadioItem>
-                    ))}
-                  </DropdownMenuRadioGroup>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-          </div>
-          <div className="flex items-center justify-between">
-            <Label htmlFor="accountStatus">Estado de cuenta</Label>
-            <div className="flex items-center gap-2">
-              <Switch
-                id="accountStatus"
-                checked={formData.accountStatus}
-                onCheckedChange={(checked) =>
-                  setFormData({ ...formData, accountStatus: checked })
-                }
-              />
-            </div>
-          </div>
-          <DialogFooter>
-            <Button
-              variant="outline"
-              type="reset"
-              onClick={() => {
-                setIsOpen(false);
-                //resetForm();
-                setFormData(initialFormData);
-              }}
-            >
-              Cancelar
-            </Button>
-            <Button type="submit">Guardar</Button>
-          </DialogFooter>
-        </form>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Seleccione un rol" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {[Role.ADMIN, Role.PROFESOR, Role.ESTUDIANTE].map(
+                        (role) => (
+                          <SelectItem key={role} value={role}>
+                            {role}
+                          </SelectItem>
+                        )
+                      )}
+                    </SelectContent>
+                  </Select>
+
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="accountStatus"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Estado de la cuenta</FormLabel>
+                  <FormControl>
+                    <div className="flex items-center space-x-2">
+                      <Switch
+                        checked={field.value === AccountStatus.ACTIVA}
+                        onCheckedChange={(checked) => {
+                          field.onChange(
+                            checked
+                              ? AccountStatus.ACTIVA
+                              : AccountStatus.INACTIVA
+                          );
+                        }}
+                      />
+                      <Badge
+                        variant={
+                          field.value === AccountStatus.ACTIVA
+                            ? "success"
+                            : "destructive"
+                        }
+                      >
+                        {field.value === AccountStatus.ACTIVA
+                          ? "Activa"
+                          : "Inactiva"}
+                      </Badge>
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <DialogFooter>
+              <Button
+                variant="outline"
+                type="reset"
+                onClick={() => {
+                  setIsOpen(false);
+                  form.reset();
+                }}
+              >
+                Cancelar
+              </Button>
+              <Button type="submit">Guardar</Button>
+            </DialogFooter>
+          </form>
+        </Form>
       </DialogContent>
     </Dialog>
   );
