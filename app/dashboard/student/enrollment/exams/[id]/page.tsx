@@ -278,8 +278,8 @@ export default function ExamDetailPage() {
 							<div>
 								<h3 className="mb-2 font-medium text-sm">Temas a evaluar</h3>
 								<ul className="space-y-1">
-									{exam.topics.map((topic, index) => (
-										<li key={index} className="flex items-start gap-2 text-sm">
+									{exam.topics.map((topic) => (
+										<li key={topic} className="flex items-start gap-2 text-sm">
 											<Check className="mt-0.5 h-4 w-4 text-primary" />
 											<span>{topic}</span>
 										</li>
@@ -294,8 +294,11 @@ export default function ExamDetailPage() {
 									Materiales permitidos
 								</h3>
 								<ul className="space-y-1">
-									{exam.materials.map((material, index) => (
-										<li key={index} className="flex items-start gap-2 text-sm">
+									{exam.materials.map((material) => (
+										<li
+											key={material}
+											className="flex items-start gap-2 text-sm"
+										>
 											<Check className="mt-0.5 h-4 w-4 text-primary" />
 											<span>{material}</span>
 										</li>
@@ -314,9 +317,9 @@ export default function ExamDetailPage() {
 						</CardHeader>
 						<CardContent>
 							<div className="space-y-2">
-								{exam.previousExams.map((prevExam, index) => (
+								{exam.previousExams.map((prevExam) => (
 									<div
-										key={index}
+										key={prevExam.url}
 										className="flex items-center justify-between"
 									>
 										<div className="flex items-center gap-2">
@@ -342,8 +345,8 @@ export default function ExamDetailPage() {
 							<AccordionTrigger>Requisitos para inscripción</AccordionTrigger>
 							<AccordionContent>
 								<ul className="space-y-2">
-									{exam.requirements.map((req, index) => (
-										<li key={index} className="flex items-start gap-2">
+									{exam.requirements.map((req) => (
+										<li key={req} className="flex items-start gap-2">
 											<Check className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
 											<span>{req}</span>
 										</li>

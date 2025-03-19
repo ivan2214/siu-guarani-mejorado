@@ -27,10 +27,14 @@
 	"organizeImports": {
 		"enabled": true
 	},
+
 	"linter": {
 		"enabled": true,
 		"rules": {
 			"recommended": true,
+			"suspicious": {
+				"noExplicitAny": "off"
+			},
 			"complexity": {
 				"noBannedTypes": "off"
 			},

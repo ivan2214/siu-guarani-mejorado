@@ -546,8 +546,8 @@ export default function EnrollmentExamsPage() {
 					</DialogHeader>
 					<div className="space-y-4 py-4">
 						<ul className="space-y-2">
-							{selectedExam?.requirements.map((req: string, index: number) => (
-								<li key={index} className="flex items-start gap-2">
+							{selectedExam?.requirements.map((req: string) => (
+								<li key={req} className="flex items-start gap-2">
 									<Check className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
 									<span>{req}</span>
 								</li>

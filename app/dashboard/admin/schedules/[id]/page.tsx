@@ -80,6 +80,8 @@ export default function ScheduleDetailPage({
 }: {
 	params: { id: string };
 }) {
+	console.log("params", params);
+
 	return (
 		<div className="container mx-auto space-y-6 py-6">
 			<div className="flex items-center gap-2">
@@ -203,8 +205,8 @@ export default function ScheduleDetailPage({
 									</CardHeader>
 									<CardContent>
 										<ul className="list-disc space-y-1 pl-5">
-											{schedule.prerequisites.map((prereq, index) => (
-												<li key={index}>{prereq}</li>
+											{schedule.prerequisites.map((prereq) => (
+												<li key={prereq}>{prereq}</li>
 											))}
 										</ul>
 									</CardContent>
@@ -350,8 +352,8 @@ export default function ScheduleDetailPage({
 												</tr>
 											</thead>
 											<tbody className="divide-y divide-border">
-												{schedule.sessions.map((session, index) => (
-													<tr key={index}>
+												{schedule.sessions.map((session) => (
+													<tr key={new Date(session.date).toLocaleDateString()}>
 														<td className="px-4 py-2 text-sm">
 															{new Date(session.date).toLocaleDateString()}
 														</td>

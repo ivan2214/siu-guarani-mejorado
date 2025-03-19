@@ -22,7 +22,10 @@ export default function UserDetailLoading() {
 								{Array(4)
 									.fill(null)
 									.map((_, i) => (
-										<div key={i} className="flex items-center gap-2">
+										<div
+											key={`skeleton-${i.toLocaleString()}`}
+											className="flex items-center gap-2"
+										>
 											<Skeleton className="h-4 w-4" />
 											<Skeleton className="h-4 w-full" />
 										</div>
@@ -40,7 +43,10 @@ export default function UserDetailLoading() {
 							{Array(4)
 								.fill(null)
 								.map((_, i) => (
-									<Skeleton key={i} className="h-10 w-full" />
+									<Skeleton
+										key={`skeleton-${i.toLocaleString()}`}
+										className="h-10 w-full"
+									/>
 								))}
 						</div>
 
@@ -54,7 +60,10 @@ export default function UserDetailLoading() {
 									{Array(8)
 										.fill(null)
 										.map((_, i) => (
-											<div key={i} className="space-y-1">
+											<div
+												key={`skeleton-${i.toLocaleString()}`}
+												className="space-y-1"
+											>
 												<Skeleton className="h-4 w-[100px]" />
 												<Skeleton className="h-4 w-full" />
 											</div>
@@ -67,7 +76,7 @@ export default function UserDetailLoading() {
 							{Array(3)
 								.fill(null)
 								.map((_, i) => (
-									<Card key={i}>
+									<Card key={`skeleton-${i.toLocaleString()}`}>
 										<CardHeader className="pb-2">
 											<Skeleton className="h-4 w-[100px]" />
 										</CardHeader>

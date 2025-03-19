@@ -30,7 +30,10 @@ export default function CertificateDetailLoading() {
 								{Array(3)
 									.fill(null)
 									.map((_, i) => (
-										<div key={i} className="flex items-center gap-2">
+										<div
+											key={`skeleton-${i.toLocaleString()}`}
+											className="flex items-center gap-2"
+										>
 											<Skeleton className="h-4 w-4" />
 											<Skeleton className="h-4 w-full" />
 										</div>
@@ -77,7 +80,10 @@ export default function CertificateDetailLoading() {
 							{Array(4)
 								.fill(null)
 								.map((_, i) => (
-									<Skeleton key={i} className="h-10 w-full" />
+									<Skeleton
+										key={`skeleton-two-${i.toLocaleString()}`}
+										className="h-10 w-full"
+									/>
 								))}
 						</div>
 

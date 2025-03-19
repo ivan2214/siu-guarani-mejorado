@@ -271,9 +271,9 @@ export default function CourseDetailPage() {
 									<div>
 										<h3 className="mb-2 font-medium text-sm">Objetivos</h3>
 										<ul className="space-y-1">
-											{course.objectives.map((objective, index) => (
+											{course.objectives.map((objective) => (
 												<li
-													key={index}
+													key={objective}
 													className="flex items-start gap-2 text-sm"
 												>
 													<Check className="mt-0.5 h-4 w-4 text-primary" />
@@ -294,9 +294,9 @@ export default function CourseDetailPage() {
 								</CardHeader>
 								<CardContent>
 									<ul className="space-y-2">
-										{course.bibliography.map((book, index) => (
+										{course.bibliography.map((book) => (
 											<li
-												key={index}
+												key={book}
 												className="flex items-center gap-2 text-sm"
 											>
 												<FileText className="h-4 w-4 text-muted-foreground" />
@@ -312,8 +312,8 @@ export default function CourseDetailPage() {
 									<AccordionTrigger>Requisitos previos</AccordionTrigger>
 									<AccordionContent>
 										<ul className="space-y-2">
-											{course.prerequisites.map((req, index) => (
-												<li key={index} className="flex items-start gap-2">
+											{course.prerequisites.map((req) => (
+												<li key={req} className="flex items-start gap-2">
 													<Check className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
 													<span>{req}</span>
 												</li>
@@ -333,12 +333,12 @@ export default function CourseDetailPage() {
 									</CardDescription>
 								</CardHeader>
 								<CardContent className="space-y-6">
-									{course.syllabus.map((unit, index) => (
-										<div key={index} className="space-y-2">
+									{course.syllabus.map((unit) => (
+										<div key={unit.unit} className="space-y-2">
 											<h3 className="font-medium text-sm">{unit.unit}</h3>
 											<ul className="space-y-1 pl-5">
-												{unit.topics.map((topic, topicIndex) => (
-													<li key={topicIndex} className="list-disc text-sm">
+												{unit.topics.map((topic) => (
+													<li key={topic} className="list-disc text-sm">
 														{topic}
 													</li>
 												))}
@@ -369,9 +369,9 @@ export default function CourseDetailPage() {
 								</CardHeader>
 								<CardContent>
 									<div className="space-y-4">
-										{course.schedule_details.map((schedule, index) => (
+										{course.schedule_details.map((schedule) => (
 											<div
-												key={index}
+												key={schedule.day}
 												className="flex items-start gap-3 rounded-lg border p-3"
 											>
 												<div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">

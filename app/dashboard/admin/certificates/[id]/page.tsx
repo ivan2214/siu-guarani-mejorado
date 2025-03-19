@@ -76,6 +76,8 @@ export default function CertificateDetailPage({
 }: {
 	params: { id: string };
 }) {
+	console.log("params", params);
+
 	return (
 		<div className="container mx-auto space-y-6 py-6">
 			<div className="flex items-center gap-2">
@@ -263,8 +265,8 @@ export default function CertificateDetailPage({
 								</CardHeader>
 								<CardContent>
 									<ul className="space-y-2">
-										{certificate.achievements.map((achievement, index) => (
-											<li key={index} className="flex items-center gap-2">
+										{certificate.achievements.map((achievement) => (
+											<li key={achievement} className="flex items-center gap-2">
 												<Award className="h-5 w-5 text-primary" />
 												<span>{achievement}</span>
 											</li>
@@ -299,8 +301,8 @@ export default function CertificateDetailPage({
 												</tr>
 											</thead>
 											<tbody className="divide-y divide-border">
-												{certificate.courses.map((course, index) => (
-													<tr key={index}>
+												{certificate.courses.map((course) => (
+													<tr key={course.code}>
 														<td className="px-4 py-2 text-sm">{course.code}</td>
 														<td className="px-4 py-2 text-sm">{course.name}</td>
 														<td className="px-4 py-2 text-sm">
@@ -381,29 +383,27 @@ export default function CertificateDetailPage({
 													</tr>
 												</thead>
 												<tbody className="divide-y divide-border">
-													{certificate.verificationHistory.map(
-														(history, index) => (
-															<tr key={index}>
-																<td className="px-4 py-2 text-sm">
-																	{new Date(history.date).toLocaleDateString()}
-																</td>
-																<td className="px-4 py-2 text-sm">
-																	<Badge
-																		variant={
-																			history.status === "Verified"
-																				? "success"
-																				: "secondary"
-																		}
-																	>
-																		{history.status}
-																	</Badge>
-																</td>
-																<td className="px-4 py-2 text-sm">
-																	{history.verifier}
-																</td>
-															</tr>
-														),
-													)}
+													{certificate.verificationHistory.map((history) => (
+														<tr key={history.verifier}>
+															<td className="px-4 py-2 text-sm">
+																{new Date(history.date).toLocaleDateString()}
+															</td>
+															<td className="px-4 py-2 text-sm">
+																<Badge
+																	variant={
+																		history.status === "Verified"
+																			? "success"
+																			: "secondary"
+																	}
+																>
+																	{history.status}
+																</Badge>
+															</td>
+															<td className="px-4 py-2 text-sm">
+																{history.verifier}
+															</td>
+														</tr>
+													))}
 												</tbody>
 											</table>
 										</div>

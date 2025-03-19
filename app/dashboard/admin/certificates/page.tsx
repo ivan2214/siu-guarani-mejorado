@@ -168,6 +168,7 @@ export default function CertificatesPage() {
 	});
 	const [isNewCertificateOpen, setIsNewCertificateOpen] = useState(false);
 	const [isTemplateDialogOpen, setIsTemplateDialogOpen] = useState(false);
+
 	const [selectedCertificate, setSelectedCertificate] = useState<any>(null);
 	const [activeTab, setActiveTab] = useState("all");
 

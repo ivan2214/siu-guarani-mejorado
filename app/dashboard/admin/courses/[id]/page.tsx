@@ -8,6 +8,7 @@ import {
 	Calendar,
 	Check,
 	Clock,
+	Copy,
 	Download,
 	Edit,
 	FileText,
@@ -515,7 +516,7 @@ export default function CourseDetailPage() {
 									<Label htmlFor="objectives">Objetivos</Label>
 									<div className="space-y-2">
 										{editedCourse.objectives.map((objective, index) => (
-											<div key={index} className="flex gap-2">
+											<div key={objective} className="flex gap-2">
 												<Input
 													value={objective}
 													onChange={(e) => {
@@ -601,9 +602,9 @@ export default function CourseDetailPage() {
 										<div className="space-y-2">
 											<h3 className="font-medium text-sm">Objetivos</h3>
 											<ul className="space-y-1">
-												{course.objectives.map((objective, index) => (
+												{course.objectives.map((objective) => (
 													<li
-														key={index}
+														key={objective}
 														className="flex items-start gap-2 text-sm"
 													>
 														<div className="mt-0.5 rounded-full bg-primary/10 p-1">
@@ -626,9 +627,9 @@ export default function CourseDetailPage() {
 									</CardHeader>
 									<CardContent>
 										<div className="space-y-2">
-											{course.bibliography.map((book, index) => (
+											{course.bibliography.map((book) => (
 												<div
-													key={index}
+													key={book.title}
 													className="flex items-center justify-between rounded-md border p-2"
 												>
 													<div className="flex items-center gap-2">
@@ -647,26 +648,7 @@ export default function CourseDetailPage() {
 														size="sm"
 														onClick={() => toast.success("Referencia copiada")}
 													>
-														<svg
-															xmlns="http://www.w3.org/2000/svg"
-															viewBox="0 0 24 24"
-															fill="none"
-															stroke="currentColor"
-															strokeWidth="2"
-															strokeLinecap="round"
-															strokeLinejoin="round"
-															className="h-4 w-4"
-														>
-															<rect
-																x="9"
-																y="9"
-																width="13"
-																height="13"
-																rx="2"
-																ry="2"
-															/>
-															<path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-														</svg>
+														<Copy className="h-4 w-4" />
 														<span className="sr-only">Copiar referencia</span>
 													</Button>
 												</div>
@@ -784,12 +766,12 @@ export default function CourseDetailPage() {
 						</CardHeader>
 						<CardContent>
 							<div className="space-y-6">
-								{course.syllabus.map((unit, index) => (
+								{course.syllabus.map((unit) => (
 									<div key={unit.unit} className="space-y-2">
 										<h3 className="font-medium text-lg">{unit.unit}</h3>
 										<ul className="space-y-1 pl-5">
-											{unit.topics.map((topic, topicIndex) => (
-												<li key={topicIndex} className="list-disc text-sm">
+											{unit.topics.map((topic) => (
+												<li key={topic} className="list-disc text-sm">
 													{topic}
 												</li>
 											))}
@@ -809,7 +791,7 @@ export default function CourseDetailPage() {
 						</CardHeader>
 						<CardContent>
 							<div className="space-y-4">
-								{course.schedule.map((schedule, index) => (
+								{course.schedule.map((schedule) => (
 									<div
 										key={schedule.day}
 										className="flex items-start gap-3 rounded-lg border p-3"

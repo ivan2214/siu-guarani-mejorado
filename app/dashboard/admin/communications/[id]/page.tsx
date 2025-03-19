@@ -66,6 +66,8 @@ export default function CommunicationDetailPage({
 }: {
 	params: { id: string };
 }) {
+	console.log("params: ", params);
+
 	return (
 		<div className="container mx-auto space-y-6 py-6">
 			<div className="flex items-center gap-2">
@@ -164,8 +166,8 @@ export default function CommunicationDetailPage({
 							<div className="space-y-3">
 								<h3 className="font-medium">Tags</h3>
 								<div className="flex flex-wrap gap-2">
-									{communication.tags.map((tag, index) => (
-										<Badge key={index} variant="outline">
+									{communication.tags.map((tag) => (
+										<Badge key={tag} variant="outline">
 											{tag}
 										</Badge>
 									))}

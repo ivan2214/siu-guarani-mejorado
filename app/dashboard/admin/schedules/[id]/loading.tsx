@@ -27,7 +27,10 @@ export default function ScheduleDetailLoading() {
 								{Array(3)
 									.fill(null)
 									.map((_, i) => (
-										<div key={i} className="flex items-center gap-2">
+										<div
+											key={`skeleton-${i.toLocaleString()}`}
+											className="flex items-center gap-2"
+										>
 											<Skeleton className="h-4 w-4" />
 											<Skeleton className="h-4 w-full" />
 										</div>
@@ -41,7 +44,10 @@ export default function ScheduleDetailLoading() {
 								{Array(3)
 									.fill(null)
 									.map((_, i) => (
-										<div key={i} className="flex items-center gap-2">
+										<div
+											key={`skeleton-${i.toLocaleString()}`}
+											className="flex items-center gap-2"
+										>
 											<Skeleton className="h-4 w-4" />
 											<Skeleton className="h-4 w-full" />
 										</div>
@@ -71,7 +77,10 @@ export default function ScheduleDetailLoading() {
 							{Array(4)
 								.fill(null)
 								.map((_, i) => (
-									<Skeleton key={i} className="h-10 w-full" />
+									<Skeleton
+										key={`skeleton-${i.toLocaleString()}`}
+										className="h-10 w-full"
+									/>
 								))}
 						</div>
 
@@ -88,7 +97,7 @@ export default function ScheduleDetailLoading() {
 							{Array(2)
 								.fill(null)
 								.map((_, i) => (
-									<Card key={i}>
+									<Card key={`skeleton-${i.toLocaleString()}`}>
 										<CardHeader>
 											<Skeleton className="h-6 w-[150px]" />
 										</CardHeader>
@@ -97,7 +106,10 @@ export default function ScheduleDetailLoading() {
 												{Array(3)
 													.fill(null)
 													.map((_, j) => (
-														<div key={j} className="flex justify-between">
+														<div
+															key={`skeleton-${j.toLocaleString()}`}
+															className="flex justify-between"
+														>
 															<Skeleton className="h-4 w-[100px]" />
 															<Skeleton className="h-4 w-[100px]" />
 														</div>
@@ -117,7 +129,10 @@ export default function ScheduleDetailLoading() {
 									{Array(3)
 										.fill(null)
 										.map((_, i) => (
-											<Skeleton key={i} className="h-24 w-full rounded-lg" />
+											<Skeleton
+												key={`skeleton-${i.toLocaleString()}`}
+												className="h-24 w-full rounded-lg"
+											/>
 										))}
 								</div>
 							</CardContent>

@@ -400,35 +400,31 @@ export default function MyCoursesPage() {
 					<CardContent>
 						<div className="font-bold text-sm">
 							{courses
-								.filter((course) => course.nextClass)
+								.filter((course) => course.nextClass !== null)
 								.sort(
 									(a, b) =>
-										new Date(a.nextClass!).getTime() -
-										new Date(b.nextClass!).getTime(),
+										new Date(a.nextClass).getTime() -
+										new Date(b.nextClass).getTime(),
 								)[0]?.name || "No hay clases programadas"}
 						</div>
 						<p className="text-muted-foreground text-xs">
-							{courses
-								.filter((course) => course.nextClass)
-								.sort(
-									(a, b) =>
-										new Date(a.nextClass!).getTime() -
-										new Date(b.nextClass!).getTime(),
-								)[0]?.nextClass
-								? new Date(
-										courses
-											.filter((course) => course.nextClass)
-											.sort(
-												(a, b) =>
-													new Date(a.nextClass!).getTime() -
-													new Date(b.nextClass!).getTime(),
-											)[0].nextClass!,
-									).toLocaleDateString("es-ES", {
-										weekday: "long",
-										hour: "2-digit",
-										minute: "2-digit",
-									})
-								: "Sin clases programadas"}
+							{(() => {
+								const nextCourse = courses
+									.filter((course) => course.nextClass !== null)
+									.sort(
+										(a, b) =>
+											new Date(a.nextClass).getTime() -
+											new Date(b.nextClass).getTime(),
+									)[0];
+
+								return nextCourse?.nextClass
+									? new Date(nextCourse.nextClass).toLocaleDateString("es-ES", {
+											weekday: "long",
+											hour: "2-digit",
+											minute: "2-digit",
+										})
+									: "Sin clases programadas";
+							})()}
 						</p>
 					</CardContent>
 				</Card>
@@ -589,7 +585,6 @@ export default function MyCoursesPage() {
 										</div>
 									</CardContent>
 									<CardFooter className="flex justify-between border-t p-3">
-										<div></div>
 										<Button variant="ghost" size="sm" asChild>
 											<Link href={`/my-courses/${course.id}`}>
 												Ver detalles
@@ -656,7 +651,6 @@ export default function MyCoursesPage() {
 										</div>
 									</CardContent>
 									<CardFooter className="flex justify-between border-t p-3">
-										<div></div>
 										<Button variant="ghost" size="sm" asChild>
 											<Link href={`/my-courses/${course.id}`}>
 												Ver detalles

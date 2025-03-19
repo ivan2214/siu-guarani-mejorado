@@ -29,7 +29,10 @@ export default function CommunicationDetailLoading() {
 								{Array(3)
 									.fill(null)
 									.map((_, i) => (
-										<div key={i} className="flex items-center gap-2">
+										<div
+											key={`skeleton-${i.toLocaleString()}`}
+											className="flex items-center gap-2"
+										>
 											<Skeleton className="h-4 w-4" />
 											<Skeleton className="h-4 w-full" />
 										</div>
@@ -57,7 +60,10 @@ export default function CommunicationDetailLoading() {
 									{Array(3)
 										.fill(null)
 										.map((_, i) => (
-											<Skeleton key={i} className="h-6 w-[80px]" />
+											<Skeleton
+												key={`skeleton-${i.toLocaleString()}`}
+												className="h-6 w-[80px]"
+											/>
 										))}
 								</div>
 							</div>
@@ -78,7 +84,10 @@ export default function CommunicationDetailLoading() {
 							{Array(3)
 								.fill(null)
 								.map((_, i) => (
-									<Skeleton key={i} className="h-10 w-full" />
+									<Skeleton
+										key={`skeleton-${i.toLocaleString()}`}
+										className="h-10 w-full"
+									/>
 								))}
 						</div>
 

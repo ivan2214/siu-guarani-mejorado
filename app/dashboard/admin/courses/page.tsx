@@ -7,6 +7,7 @@ import {
 	Download,
 	Edit,
 	Filter,
+	Menu,
 	Plus,
 	Search,
 	Trash2,
@@ -240,9 +241,8 @@ export default function ManageCoursesPage() {
 	const sortedCourses = [...filteredCourses].sort((a, b) => {
 		if (sortOrder === "asc") {
 			return a[sortBy as keyof typeof a] > b[sortBy as keyof typeof b] ? 1 : -1;
-		} else {
-			return a[sortBy as keyof typeof a] < b[sortBy as keyof typeof b] ? 1 : -1;
 		}
+		return a[sortBy as keyof typeof a] < b[sortBy as keyof typeof b] ? 1 : -1;
 	});
 
 	const resetFilters = () => {
@@ -682,34 +682,34 @@ export default function ManageCoursesPage() {
 							<TableRow>
 								<TableHead className="w-[50px]">#</TableHead>
 								<TableHead>
-									<div
+									<Button
 										className="flex cursor-pointer items-center gap-1"
 										onClick={() => handleSort("name")}
 									>
 										Nombre
 										{sortBy === "name" && <ArrowUpDown className="h-4 w-4" />}
-									</div>
+									</Button>
 								</TableHead>
 								<TableHead>
-									<div
+									<Button
 										className="flex cursor-pointer items-center gap-1"
 										onClick={() => handleSort("code")}
 									>
 										Código
 										{sortBy === "code" && <ArrowUpDown className="h-4 w-4" />}
-									</div>
+									</Button>
 								</TableHead>
 								<TableHead>
-									<div
+									<Button
 										className="flex cursor-pointer items-center gap-1"
 										onClick={() => handleSort("career")}
 									>
 										Carrera
 										{sortBy === "career" && <ArrowUpDown className="h-4 w-4" />}
-									</div>
+									</Button>
 								</TableHead>
 								<TableHead>
-									<div
+									<Button
 										className="flex cursor-pointer items-center gap-1"
 										onClick={() => handleSort("professor")}
 									>
@@ -717,19 +717,19 @@ export default function ManageCoursesPage() {
 										{sortBy === "professor" && (
 											<ArrowUpDown className="h-4 w-4" />
 										)}
-									</div>
+									</Button>
 								</TableHead>
 								<TableHead>
-									<div
+									<Button
 										className="flex cursor-pointer items-center gap-1"
 										onClick={() => handleSort("year")}
 									>
 										Año/Sem
 										{sortBy === "year" && <ArrowUpDown className="h-4 w-4" />}
-									</div>
+									</Button>
 								</TableHead>
 								<TableHead>
-									<div
+									<Button
 										className="flex cursor-pointer items-center gap-1"
 										onClick={() => handleSort("credits")}
 									>
@@ -737,7 +737,7 @@ export default function ManageCoursesPage() {
 										{sortBy === "credits" && (
 											<ArrowUpDown className="h-4 w-4" />
 										)}
-									</div>
+									</Button>
 								</TableHead>
 								<TableHead>Estado</TableHead>
 								<TableHead className="text-right">Acciones</TableHead>
@@ -769,20 +769,7 @@ export default function ManageCoursesPage() {
 											<DropdownMenu>
 												<DropdownMenuTrigger asChild>
 													<Button variant="ghost" size="icon">
-														<svg
-															xmlns="http://www.w3.org/2000/svg"
-															viewBox="0 0 24 24"
-															fill="none"
-															stroke="currentColor"
-															strokeWidth="2"
-															strokeLinecap="round"
-															strokeLinejoin="round"
-															className="h-4 w-4"
-														>
-															<circle cx="12" cy="12" r="1" />
-															<circle cx="19" cy="12" r="1" />
-															<circle cx="5" cy="12" r="1" />
-														</svg>
+														<Menu className="h-4 w-4" />
 														<span className="sr-only">Abrir menú</span>
 													</Button>
 												</DropdownMenuTrigger>
