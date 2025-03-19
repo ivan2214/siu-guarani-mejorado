@@ -2,7 +2,17 @@
 
 import type React from "react";
 
-import { Eye, EyeOff, GraduationCap, Loader2 } from "lucide-react";
+import {
+  Eye,
+  EyeOff,
+  GraduationCap,
+  Loader2,
+  Phone,
+  MapPin,
+  Upload,
+  X,
+  Edit,
+} from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -17,6 +27,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 import {
   Select,
@@ -158,6 +169,55 @@ export default function RegisterPage() {
                 )}
               />
 
+              <FormField
+                control={form.control}
+                name="phone"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Teléfono</FormLabel>
+                    <FormControl>
+                      <div className="relative">
+                        <Phone className="-translate-y-1/2 absolute top-1/2 left-3 h-4 w-4 text-muted-foreground" />
+                        <Input
+                          {...field}
+                          type="tel"
+                          placeholder="123456789"
+                          className="pl-10"
+                        />
+                      </div>
+                    </FormControl>
+                    <FormDescription>
+                      Ingrese su número de teléfono
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="address"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Dirección</FormLabel>
+                    <FormControl>
+                      <div className="relative">
+                        <MapPin className="-translate-y-1/2 absolute top-1/2 left-3 h-4 w-4 text-muted-foreground" />
+                        <Input
+                          {...field}
+                          placeholder="Av. Ejemplo 123"
+                          className="pl-10"
+                        />
+                      </div>
+                    </FormControl>
+                    <FormDescription>
+                      Ingrese su dirección completa
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
               {/* <div className="space-y-2">
                 <Label>Tipo de usuario</Label>
                 <RadioGroup
@@ -203,6 +263,92 @@ export default function RegisterPage() {
                       </SelectItem>
                     </SelectContent>
                   </Select>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="avatar"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Foto de perfil</FormLabel>
+                    <FormControl>
+                      <div className="flex flex-col items-center gap-4">
+                        <div className="group relative">
+                          <Avatar
+                            className="h-24 w-24 cursor-pointer border-2 border-primary/20 transition-colors hover:border-primary/50"
+                            onClick={() =>
+                              document.getElementById("avatar-upload")?.click()
+                            }
+                          >
+                            <AvatarImage src={field.value || ""} alt="Avatar" />
+                            <AvatarFallback className="bg-primary/10">
+                              {form.watch("name")?.charAt(0) || "U"}
+                            </AvatarFallback>
+
+                            {!field.value && (
+                              <div className="absolute inset-0 flex items-center justify-center rounded-full bg-black/30 opacity-0 transition-opacity group-hover:opacity-100">
+                                <Upload className="h-8 w-8 text-white" />
+                              </div>
+                            )}
+
+                            {field.value && (
+                              <div className="-top-2 -right-2 absolute flex gap-1">
+                                <Button
+                                  type="button"
+                                  size="icon"
+                                  variant="secondary"
+                                  className="h-6 w-6 rounded-full"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    document
+                                      .getElementById("avatar-upload")
+                                      ?.click();
+                                  }}
+                                >
+                                  <Edit className="h-3 w-3" />
+                                </Button>
+                                <Button
+                                  type="button"
+                                  size="icon"
+                                  variant="destructive"
+                                  className="h-6 w-6 rounded-full"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    field.onChange("");
+                                  }}
+                                >
+                                  <X className="h-3 w-3" />
+                                </Button>
+                              </div>
+                            )}
+                          </Avatar>
+                          <input
+                            id="avatar-upload"
+                            type="file"
+                            accept="image/*"
+                            className="hidden"
+                            onChange={(e) => {
+                              const file = e.target.files?.[0];
+                              if (file) {
+                                // In a real app, you would upload to a server/storage
+                                // For now, we'll create a local URL
+                                const reader = new FileReader();
+                                reader.onload = (event) => {
+                                  field.onChange(event.target?.result);
+                                };
+                                reader.readAsDataURL(file);
+                              }
+                            }}
+                          />
+                        </div>
+                      </div>
+                    </FormControl>
+                    <FormDescription className="text-center">
+                      Haz clic en la imagen para subir tu foto de perfil
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
                 )}
               />
 
