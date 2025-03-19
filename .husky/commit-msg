@@ -1,1 +1,2 @@
+bun check:fix
 bunx commitlint --edit "$1"
